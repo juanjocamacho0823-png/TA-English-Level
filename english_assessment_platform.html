@@ -839,30 +839,46 @@ async function evaluateWithClaude() {
     }
   }
 
-  const systemPrompt=`You are an expert English language assessor using the CEFR framework (A1–C2), specializing in spoken professional English for Change Management consultants at a global technology consulting firm (Accenture context).
+  const systemPrompt=`You are a strict, calibrated English language examiner using the CEFR framework (A1–C2). You assess spoken professional English for technology Change Management consultants. You are known for being accurate and conservative — you do NOT inflate scores. If in doubt between two levels, always assign the LOWER one.
 
-The candidate has completed:
+STRICT CEFR LEVEL DEFINITIONS (apply these literally):
+- A1: Cannot form complete sentences in English. Single words or memorized phrases only.
+- A2: Very basic sentences. Major grammar errors. Extremely limited vocabulary. Cannot sustain a professional conversation. Responses are short, fragmented, or mostly off-topic.
+- B1: Can communicate simple ideas but with frequent errors, limited vocabulary, long pauses, and heavy reliance on simple structures. Struggles with complex professional scenarios. Responses lack depth.
+- B2: Communicates clearly with occasional errors. Uses professional vocabulary appropriately. Can handle complex scenarios with some hesitation. Responses are structured and mostly complete.
+- C1: Fluent, flexible, precise. Uses CM terminology naturally. Handles complex stakeholder scenarios with confidence. Minor errors only.
+- C2: Near-native. No significant errors. Rich vocabulary. Sophisticated argumentation.
+
+CALIBRATION RULES — apply strictly:
+1. If the candidate gives short, simple, or off-topic responses → A2 or lower
+2. If the candidate uses basic vocabulary only and cannot explain CM concepts → A2
+3. If the candidate makes frequent grammar errors and struggles with professional register → B1 at most
+4. MC score below 5/10 → subtract one level from voice assessment
+5. MC score below 3/10 → assign A2 regardless of voice quality
+6. Never assign B2 unless the candidate demonstrates clear professional fluency AND uses domain-specific vocabulary correctly
+7. Never assign C1 unless the candidate sounds like a confident native-level professional
+
+The candidate completed:
 - 10 spoken questions on Change Management scenarios (Microsoft, SAP, Google Workspace, AWS, Oracle, AI Adoption)
-- 10 multiple choice questions: 5 CM vocabulary + 5 professional grammar (scored: ${mcCorrect}/${mcTotal} correct)
+- 10 multiple choice questions: 5 CM vocabulary + 5 professional grammar
+- MC score: ${mcCorrect}/${mcTotal} correct
 
-Evaluate the VOICE RECORDINGS provided across 3 dimensions (0–100):
-1. Fluency & spontaneity — natural rhythm, pacing, hesitations, self-repair
-2. Lexical range & CM vocabulary — Change Management terminology, tech adoption language, professional register
-3. Coherence & argumentation — logical structure, evidence-based reasoning, stakeholder framing
-
-Also factor the overall MC score (${mcCorrect}/${mcTotal}) — 5 CM vocabulary + 5 grammar questions — as a signal of written English range.
+Evaluate VOICE RECORDINGS across 3 dimensions (0–100, be strict):
+1. Fluency & spontaneity — natural rhythm, pacing, absence of unnatural pauses and fillers
+2. Lexical range & CM vocabulary — correct use of Change Management and tech adoption terminology
+3. Coherence & argumentation — logical structure, completeness, professional register
 
 Then produce:
-- Overall CEFR level (A1–C2)
-- 2-sentence spoken feedback referencing actual speech patterns if audible
-- 3 specific strengths in Change Management English vocabulary (be specific — name actual terms or phrases)
-- 3 specific gaps or areas to improve (be specific — name the CM vocabulary domain)
+- Overall CEFR level — be conservative, apply the rules above
+- 2-sentence feedback referencing specific observed weaknesses in their speech
+- 3 specific strengths (only if genuinely observed — do not invent)
+- 3 specific gaps (be direct and specific about what is missing)
 - Recommended learning path from: "Intensive English Program (6 months)" | "Conversational Upskilling (3 months)" | "English for Tech Change Management (tutoring)" | "Advanced Stakeholder Communication & Leadership English"
 
 Respond ONLY with valid JSON, no markdown, no preamble:
-{"cefr":"B2","fluency":74,"lexical":68,"coherence":80,"overall":72,"feedback":"...","strengths":["...","...","..."],"gaps":["...","...","..."],"path":"..."}`;
+{"cefr":"B1","fluency":45,"lexical":40,"coherence":42,"overall":43,"feedback":"...","strengths":["...","...","..."],"gaps":["...","...","..."],"path":"..."}`;
 
-  content.push({type:'text',text:`Candidate: ${collab.name} — ${collab.role}\nManager: ${collab.manager}\nMC score: ${mcCorrect}/${mcTotal}\n\nVoice recordings summary:\n${audioSummary}\n\nPlease evaluate all audio provided and score accordingly.`});
+  content.push({type:'text',text:`Candidate: ${collab.name} — EID: ${collab.eid} — CL: ${collab.cl}\nMC score: ${mcCorrect}/${mcTotal}\n\nVoice recordings:\n${audioSummary}\n\nApply the strict CEFR calibration rules. Do not inflate the score.`});
 
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
