@@ -803,30 +803,37 @@ const DRIVE_CLIENT_ID = '76910051944-v4tk7um169nv848r2hu29c6uevna3s0g.apps.googl
 const DRIVE_FOLDER_ID = '1ewzp6evsL8WGFb8cmZpVmF96w6B3CyYX';
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 let driveToken = null;
+let tokenClient = null;
+
+function initTokenClient() {
+  if (tokenClient) return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: DRIVE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: () => {}
+  });
+}
 
 async function getDriveToken() {
   return new Promise((resolve, reject) => {
-    if (driveToken) { resolve(driveToken); return; }
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: DRIVE_CLIENT_ID,
-      scope: DRIVE_SCOPE,
-      callback: (response) => {
-        if (response.error) { reject(response.error); return; }
-        driveToken = response.access_token;
-        resolve(driveToken);
-      }
-    });
-    client.requestAccessToken({ prompt: 'consent' });
+    initTokenClient();
+    tokenClient.callback = (response) => {
+      if (response.error) { reject(new Error(response.error)); return; }
+      driveToken = response.access_token;
+      resolve(driveToken);
+    };
+    if (driveToken) {
+      resolve(driveToken);
+    } else {
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    }
   });
 }
 
 async function uploadAudioToDrive(blob, filename) {
   try {
     const token = await getDriveToken();
-    const metadata = {
-      name: filename,
-      parents: [DRIVE_FOLDER_ID]
-    };
+    const metadata = { name: filename, parents: [DRIVE_FOLDER_ID] };
     const form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
     form.append('file', blob, filename);
@@ -836,7 +843,7 @@ async function uploadAudioToDrive(blob, filename) {
       body: form
     });
     const data = await res.json();
-    return data.id ? true : false;
+    return !!data.id;
   } catch(e) {
     console.warn('Drive upload failed:', e);
     return false;
@@ -844,21 +851,20 @@ async function uploadAudioToDrive(blob, filename) {
 }
 
 async function uploadAllAudios() {
-  const voiceQs = QUESTIONS.filter((q,i) => q.type === 'voice');
-  const uploadResults = [];
+  const results = [];
   for (let i = 0; i < QUESTIONS.length; i++) {
     const q = QUESTIONS[i];
     if (q.type !== 'voice') continue;
     const partId = 'v' + i;
     const blob = audioBlobs[partId];
-    if (!blob) continue;
+    if (!blob) { results.push({ ok: false }); continue; }
     const safeName = collab.name.replace(/\s+/g, '_');
-    const safeQ = q.question.replace(/\s+/g, '_').substring(0, 30);
-    const filename = `${safeName}_${collab.eid}_Q${i+1}_${safeQ}.webm`;
+    const safeQ = q.question.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 25);
+    const filename = `${safeName}_${collab.eid}_Q${results.length+1}_${safeQ}.webm`;
     const ok = await uploadAudioToDrive(blob, filename);
-    uploadResults.push({ q: q.question, ok });
+    results.push({ ok });
   }
-  return uploadResults;
+  return results;
 }
 
 async function submitEval() {
