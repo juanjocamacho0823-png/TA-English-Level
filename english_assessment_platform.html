@@ -891,17 +891,52 @@ async function submitEval() {
   document.getElementById('step-results').style.display='block';
   document.getElementById('results-loading').style.display='flex';
   document.getElementById('results-content').style.display='none';
-  document.querySelector('.loading-text').textContent = 'Subiendo tus audios a Google Drive…';
-
-  // Upload audios first
-  const uploadResults = await uploadAllAudios();
-  const uploaded = uploadResults.filter(r => r.ok).length;
-  console.log(`Uploaded ${uploaded}/${uploadResults.length} audios to Drive`);
-
   document.querySelector('.loading-text').textContent = 'Calculando tu nivel CEFR…';
   const result = await evaluateWithClaude();
   await saveToSheets(result);
-  renderResults(result, uploaded, uploadResults.length);
+  renderResults(result);
+}
+
+async function uploadToDriveManual() {
+  const btn = document.getElementById('btn-upload-drive');
+  btn.disabled = true;
+  btn.textContent = '⏳ Conectando con Google Drive…';
+  try {
+    await waitForGoogle();
+    initTokenClient();
+    if (!tokenClient) throw new Error('Google SDK not ready');
+    // Request token with user gesture (button click)
+    const token = await new Promise((resolve, reject) => {
+      tokenClient.callback = (response) => {
+        if (response.error) { reject(new Error(response.error)); return; }
+        driveToken = response.access_token;
+        resolve(response.access_token);
+      };
+      tokenClient.requestAccessToken({ prompt: driveToken ? '' : 'consent' });
+    });
+    btn.textContent = '⏳ Subiendo audios…';
+    const results = await uploadAllAudios();
+    const uploaded = results.filter(r => r.ok).length;
+    const total = results.length;
+    const msgEl = document.getElementById('drive-upload-msg');
+    if (uploaded === total) {
+      msgEl.className = 'alert alert-success';
+      msgEl.textContent = `✓ ${uploaded} grabaciones guardadas en Google Drive correctamente.`;
+      btn.style.display = 'none';
+    } else {
+      msgEl.className = 'alert alert-warn';
+      msgEl.textContent = `⚠ Se guardaron ${uploaded} de ${total} grabaciones. Intenta de nuevo.`;
+      btn.disabled = false;
+      btn.textContent = '🔄 Reintentar subida a Drive';
+    }
+  } catch(e) {
+    console.error('Drive error:', e);
+    const msgEl = document.getElementById('drive-upload-msg');
+    msgEl.className = 'alert alert-danger';
+    msgEl.textContent = '✗ Error al conectar con Google Drive. Intenta de nuevo.';
+    btn.disabled = false;
+    btn.textContent = '☁ Guardar mis audios en Google Drive';
+  }
 }
 
 async function blobToBase64(blob){
@@ -1006,18 +1041,21 @@ async function saveToSheets(result){
   }catch(e){console.warn('Sheets save failed:',e);}
 }
 
-function renderResults(r, uploaded, total) {
+function renderResults(r) {
   document.getElementById('results-loading').style.display='none';
   document.getElementById('results-content').style.display='block';
 
-  // Show audio upload status
-  const uploadMsg = document.createElement('div');
-  uploadMsg.className = uploaded === total ? 'alert alert-success' : 'alert alert-warn';
-  uploadMsg.style.marginBottom = '1rem';
-  uploadMsg.textContent = uploaded === total
-    ? `✓ Tus ${total} grabaciones de voz se guardaron en Google Drive correctamente.`
-    : `⚠ Se guardaron ${uploaded} de ${total} grabaciones. El equipo de L&D te contactará si falta alguna.`;
-  document.getElementById('results-content').prepend(uploadMsg);
+  // Add manual Drive upload button
+  const driveSection = document.createElement('div');
+  driveSection.style.cssText = 'margin-bottom:1rem;';
+  driveSection.innerHTML = `
+    <div id="drive-upload-msg" class="alert alert-info">
+      📁 Tus grabaciones de voz están listas. Haz click abajo para guardarlas en Google Drive.
+    </div>
+    <button id="btn-upload-drive" class="btn btn-primary" style="width:100%;" onclick="uploadToDriveManual()">
+      ☁ Guardar mis audios en Google Drive
+    </button>`;
+  document.getElementById('results-content').prepend(driveSection);
   const colors={A2:['#fef2f2','#b91c1c'],B1:['#fffbeb','#b45309'],B2:['#ecfdf5','#065f46'],C1:['#eeeeff','#4338ca'],C2:['#eeeeff','#4338ca']};
   const desc={A2:'Básico',B1:'Intermedio',B2:'Intermedio alto',C1:'Avanzado',C2:'Competente — nivel casi nativo'};
   const [bg,fg]=colors[r.cefr]||['#f0f0f8','#3d3d5c'];
