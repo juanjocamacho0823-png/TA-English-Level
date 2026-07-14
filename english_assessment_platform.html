@@ -459,6 +459,9 @@ body {
 .mc-option.incorrect .mc-letter { background: var(--acn-danger); color: white; }
 .mc-text { font-size: 14px; color: var(--acn-gray-4); line-height: 1.5; padding-top: 2px; }
 .mc-feedback { font-size: 13px; padding: 10px 14px; display: none; margin-top: 8px; border-left: 3px solid; line-height: 1.5; }
+.mc-timer-bar { height: 3px; background: var(--acn-gray-1); margin-bottom: 1rem; border-radius: 0; overflow: hidden; }
+.mc-timer-fill { height: 100%; background: var(--acn-purple); transition: width 1s linear; width: 100%; }
+.mc-timer-fill.urgent { background: var(--acn-danger); }
 .mc-feedback.visible { display: block; }
 .mc-feedback.alert-success { background: #E6F9EE; border-color: var(--acn-success); color: #005522; }
 .mc-feedback.alert-warn { background: #FFF8E6; border-color: var(--acn-warning); color: #7A3F00; }
@@ -581,32 +584,32 @@ body {
         After completing this check, the T&amp;U team will review your recordings and reach out with your personalized development plan.
       </p>
       <div style="margin-bottom:2rem; opacity:0.4;">
-        <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="180">
-          <rect x="0" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
-          <rect x="8" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
-          <rect x="16" y="2" width="4" height="36" rx="2" fill="#A100FF"/>
-          <rect x="24" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
-          <rect x="32" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
-          <rect x="40" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
-          <rect x="48" y="0" width="4" height="40" rx="2" fill="#A100FF"/>
-          <rect x="56" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
-          <rect x="64" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
-          <rect x="72" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
-          <rect x="80" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
-          <rect x="88" y="3" width="4" height="34" rx="2" fill="#A100FF"/>
-          <rect x="96" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
-          <rect x="104" y="7" width="4" height="26" rx="2" fill="#A100FF"/>
-          <rect x="112" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
-          <rect x="120" y="4" width="4" height="32" rx="2" fill="#A100FF"/>
-          <rect x="128" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
-          <rect x="136" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
-          <rect x="144" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
-          <rect x="152" y="11" width="4" height="18" rx="2" fill="#A100FF"/>
-          <rect x="160" y="1" width="4" height="38" rx="2" fill="#A100FF"/>
-          <rect x="168" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
-          <rect x="176" y="13" width="4" height="14" rx="2" fill="#A100FF"/>
-          <rect x="184" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
-          <rect x="192" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+        <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="180"><style>@keyframes heroWave{0%,100%{transform:scaleY(0.4);}50%{transform:scaleY(1);}} .hw{transform-origin:center; animation:heroWave 1.4s ease-in-out infinite;}</style>
+          <rect class="hw" style="animation-delay:0.0s;" x="0" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.06s;" x="8" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.11s;" x="16" y="2" width="4" height="36" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.17s;" x="24" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.22s;" x="32" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.28s;" x="40" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.34s;" x="48" y="0" width="4" height="40" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.39s;" x="56" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.45s;" x="64" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.5s;" x="72" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.56s;" x="80" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.62s;" x="88" y="3" width="4" height="34" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.67s;" x="96" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.73s;" x="104" y="7" width="4" height="26" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.78s;" x="112" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.84s;" x="120" y="4" width="4" height="32" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.9s;" x="128" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:0.95s;" x="136" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.01s;" x="144" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.06s;" x="152" y="11" width="4" height="18" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.12s;" x="160" y="1" width="4" height="38" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.18s;" x="168" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.23s;" x="176" y="13" width="4" height="14" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.29s;" x="184" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
+          <rect class="hw" style="animation-delay:1.34s;" x="192" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
         </svg>
       </div>
       <div class="hero-stats">
@@ -631,13 +634,13 @@ body {
     <div class="hero-right">
       <h2>Let's get started</h2>
       <p>Fill in your details to begin. This is not a test — it is a starting point to help us support your English development.</p>
-      <div class="field-alert">⏱ You will have <strong>2 minutes per spoken question</strong>. Press <strong>Start recording</strong> when ready. If the timer runs out, your response is <strong>saved automatically</strong>.</div>
+      <div style="font-size:12px; color:var(--acn-gray-3); margin-bottom:1rem; display:flex; align-items:center; gap:6px;"><span style="color:var(--acn-purple); font-size:14px;">⏱</span> 2 min per spoken question · recording saves automatically</div>
       <div class="field-row">
         <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="e.g. Ana García"/></div>
         <div class="field"><label>EID</label><input type="text" id="reg-eid" placeholder="e.g. agarcía"/></div>
       </div>
       <div class="field"><label>Career Level (CL)</label><input type="text" id="reg-cl" placeholder="e.g. 8, 9, 10"/></div>
-      <button class="btn btn-primary" style="width:100%; justify-content:center; padding:15px;" onclick="goToMicCheck()">Continue →</button>
+      <button class="btn btn-primary" style="width:100%; justify-content:center; padding:15px;" id="btn-continue" onclick="this.textContent='Loading…'; this.disabled=true; setTimeout(()=>goToMicCheck(),300);">Continue →</button>
     </div>
   </div>
 </div>
@@ -684,8 +687,9 @@ body {
 
 <!-- ── STEP: Warm-up ── -->
 <div id="step-warmup" class="step">
-  <div style="min-height:calc(100vh - 60px); display:flex; align-items:center; justify-content:center; background:var(--acn-gray-1); padding:2rem;">
-    <div style="background:var(--acn-white); max-width:540px; width:100%; padding:2.5rem; border-top:4px solid var(--acn-purple); text-align:center;">
+  <div style="min-height:calc(100vh - 60px); display:flex; align-items:center; justify-content:center; background:var(--acn-black); padding:2rem; position:relative; overflow:hidden;">
+    <div style="position:absolute;font-size:28rem;font-weight:700;color:var(--acn-purple);opacity:0.05;right:-5rem;top:50%;transform:translateY(-50%);line-height:1;pointer-events:none;">›</div>
+    <div style="background:var(--acn-white); max-width:540px; width:100%; padding:2.5rem; border-top:4px solid var(--acn-purple); text-align:center; position:relative; z-index:1;">
       <div style="font-size:36px; margin-bottom:1rem;">🎙</div>
       <div style="font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--acn-purple); margin-bottom:10px;">Warm-up · Not evaluated</div>
       <h2 style="font-size:20px; font-weight:700; margin-bottom:10px;">Let's warm up your voice</h2>
@@ -754,7 +758,7 @@ body {
   </div>
 </div>
 
-<div class="brand-strip" style="justify-content:space-between;">
+<div class="brand-strip" style="justify-content:space-between; min-height:48px; flex-wrap:wrap; gap:8px;">
   <div style="display:flex;align-items:center;gap:1rem;">
     <span>Accenture</span><span class="sep">·</span>
     <span>Digital Core</span><span class="sep">·</span>
@@ -1061,7 +1065,10 @@ function renderQuestion() {
     }
   }
   if (q.type==='voice') renderVoiceQ(q, container);
-  else renderMCQ(q, container);
+  else {
+    renderMCQ(q, container);
+    startMCTimer(currentQIdx, 45);
+  }
 }
 
 function renderVoiceQ(q, container) {
@@ -1128,6 +1135,7 @@ function selectMC(idx, correct) {
     if (i===idx) el.classList.add(idx===correct?'correct':'incorrect');
     if (i===correct && idx!==correct) el.classList.add('correct');
   });
+  clearInterval(mcTimerInterval);
   mcAnswers[currentQIdx] = idx===correct;
   const fb = document.getElementById('mc-feedback');
   const q = QUESTIONS[currentQIdx];
@@ -1375,10 +1383,20 @@ async function uploadAllAudios() {
 async function submitEval() {
   document.getElementById('step-eval').classList.remove('active');
   document.getElementById('step-results').classList.add('active');
-  document.getElementById('results-loading').style.display='flex';
-  document.getElementById('results-content').style.display='none';
-  const loadingText = document.querySelector('.loading-text-el');
-  if (loadingText) loadingText.textContent = 'Loading…';
+  document.getElementById('results-loading').style.display='none';
+  document.getElementById('results-content').style.display='flex';
+  document.getElementById('results-content').style.alignItems='center';
+  document.getElementById('results-content').style.justifyContent='center';
+  document.getElementById('results-content').style.minHeight='calc(100vh - 60px)';
+  // Show uploading state first (before OAuth)
+  const msgEl = document.getElementById('drive-upload-msg');
+  if (msgEl) {
+    msgEl.innerHTML = `<div style="text-align:center;padding:2rem;">
+      <div style="font-size:48px;margin-bottom:1rem;">☁️</div>
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:8px;">Authorize Google Drive</h2>
+      <p style="font-size:14px;color:var(--acn-gray-3);">A popup will appear to connect your Google account. Please allow access to save your recordings.</p>
+    </div>`;
+  }
   const result = await evaluateWithClaude();
   await saveToSheets(result);
   renderResults(result);
@@ -1411,7 +1429,11 @@ async function uploadToDriveManual() {
         <div style="font-size:56px; margin-bottom:1rem; animation:confettiBounce 0.6s ease;">✅</div>
         <h2 style="font-size:22px; font-weight:700; margin-bottom:10px;">Well done, ${firstName}!</h2>
         <p style="font-size:15px; color:#444; margin-bottom:8px; line-height:1.7;">Your recordings are on their way to the team.<br>We'll be in touch soon with something designed specifically for you.</p>
-        <p style="font-size:13px; color:#818180; margin-bottom:1.5rem;">Thank you for taking the time to complete this.</p>
+        <p style="font-size:13px; color:#818180; margin-bottom:6px;">Expect to hear from us in a few days.</p>
+        <p style="font-size:13px; color:#818180; margin-bottom:1rem;">Thank you for taking the time to complete this.</p>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#E6F9EE;color:#005522;font-size:12px;font-weight:600;padding:6px 14px;margin-bottom:1.5rem;">
+          ✓ ${uploaded} of ${total} recordings uploaded
+        </div>
         <div style="padding-top:1rem; border-top:1px solid #F1F1EF; font-size:11px; color:#CFCFCF; letter-spacing:0.06em; text-transform:uppercase;">Accenture · Digital Core · Tech Adoption · T&amp;U</div>`;
       msgEl.className = '';
       msgEl.style.textAlign = 'center';
@@ -1667,7 +1689,7 @@ function renderVoiceQ(q, container) {
     <div class="q-card ${techClass}">
       <div class="q-header">
         <span class="q-type-badge q-type-voice">🎙 Spoken response</span>
-        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${q.tech}</span>
+        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${shortenTechLabel(q.tech)}</span>
       </div>
       <div class="q-title">${q.question}</div>
       <div class="scenario-box">${q.scenario}</div>
@@ -1728,9 +1750,10 @@ function renderMCQ(q, container) {
     <div class="q-card ${techClass}">
       <div class="q-header">
         <span class="q-type-badge q-type-mc">● Multiple choice</span>
-        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${q.tech}</span>
+        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${shortenTechLabel(q.tech)}</span>
         ${mcEyebrow}
       </div>
+      <div class="mc-timer-bar"><div class="mc-timer-fill" id="mc-timer-fill-${currentQIdx}"></div></div>
       ${grammarNote}
       <div class="q-title">${q.question}</div>
       <div class="mc-options">${opts}</div>
@@ -1739,6 +1762,40 @@ function renderMCQ(q, container) {
         <button class="btn btn-primary" id="btn-next-mc" style="display:none;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>`;
+}
+
+let mcTimerInterval = null;
+
+function startMCTimer(qIdx, seconds) {
+  clearInterval(mcTimerInterval);
+  const fill = document.getElementById('mc-timer-fill-' + qIdx);
+  if (!fill) return;
+  let remaining = seconds;
+  fill.style.width = '100%';
+  fill.style.transition = 'none';
+  mcTimerInterval = setInterval(() => {
+    remaining--;
+    const pct = (remaining / seconds) * 100;
+    fill.style.transition = 'width 1s linear';
+    fill.style.width = pct + '%';
+    if (remaining <= 10) fill.classList.add('urgent');
+    if (remaining <= 0) {
+      clearInterval(mcTimerInterval);
+      // Auto-advance if no answer selected
+      const answered = document.querySelector('.mc-option.correct, .mc-option.incorrect, .mc-option.selected');
+      if (!answered) nextQuestion();
+    }
+  }, 1000);
+}
+
+function shortenTechLabel(tech) {
+  if (!tech) return tech;
+  if (tech === 'Professional Grammar') return 'Grammar';
+  if (tech === 'CM Vocabulary') return 'CM Vocab';
+  if (tech === 'Multi-technology Transformation') return 'Multi-tech';
+  if (tech === 'Executive Sponsorship') return 'Exec Sponsor';
+  if (tech === 'AWS Cloud Migration') return 'AWS';
+  return tech;
 }
 
 function getTechColor(tech) {
