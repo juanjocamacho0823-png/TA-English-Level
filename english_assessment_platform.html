@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="permissions-policy" content="microphone=*">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIiBmaWxsPSIjQTEwMEZGIj7igLo8L3RleHQ+PC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHk9Ii44NWVtIiBmb250LXNpemU9Ijg1IiBmaWxsPSIjQTEwMEZGIiB4PSI1Ij7igLo8L3RleHQ+PC9zdmc+">
 <title>English Proficiency Check · Tech Adoption Capability | Accenture</title>
 <style>
 /* ── Accenture Brand Tokens ── */
@@ -56,6 +56,11 @@ body {
 .topbar-divider { width: 1px; height: 28px; background: #333; }
 .topbar-title { color: var(--acn-white); font-size: 13px; font-weight: 500; line-height: 1.3; }
 .topbar-eyebrow { color: var(--acn-purple); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 2px; }
+.topbar.compact { height: 36px; border-bottom-width: 1px; }
+.topbar.compact .topbar-eyebrow { display: none; }
+.topbar.compact .topbar-title { font-size: 11px; }
+.topbar.compact svg { height: 16px; }
+.topbar.compact .topbar-divider { height: 18px; }
 
 /* ── Layout ── */
 .app { min-height: 100vh; }
@@ -294,7 +299,7 @@ body {
 .mic-status.ok { background: #E6F9EE; color: var(--acn-success); }
 .mic-status.error { background: #FFE6E6; color: var(--acn-danger); }
 .mic-error { background: #FFE6E6; border-left: 3px solid var(--acn-danger); padding: 10px 14px; font-size: 13px; color: var(--acn-danger); text-align: left; margin-bottom: 1rem; display: none; }
-.waveform { width: 100%; height: 48px; background: var(--acn-gray-1); display: block; margin: 1rem 0; }
+.waveform { width: 100%; height: 72px; background: var(--acn-gray-1); display: block; margin: 1rem 0; }
 
 /* ── Evaluation layout ── */
 .eval-wrap { padding: 2rem 0; }
@@ -388,7 +393,7 @@ body {
   line-height: 1;
   transition: color 0.3s;
 }
-.timer-display small { font-size: 9px; font-weight: 500; color: var(--acn-gray-3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+
 .timer-label-text { font-size: 11px; color: var(--acn-gray-3); text-transform: uppercase; letter-spacing: 0.08em; }
 .q-card.urgent { background: #FFF8F8; transition: background 0.5s; }
 .q-card.urgent .timer-display { color: var(--acn-danger); }
@@ -406,6 +411,25 @@ body {
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
 @keyframes confettiBounce { 0%{transform:scale(0);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
+@keyframes toastIn { from{transform:translateY(100px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+@keyframes toastOut { from{transform:translateY(0);opacity:1;} to{transform:translateY(100px);opacity:0;} }
+#encouragement-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--acn-purple);
+  color: white;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  z-index: 999;
+  display: none;
+  max-width: 280px;
+  border-left: 4px solid var(--acn-purple-light);
+  animation: toastIn 0.35s ease;
+  box-shadow: 0 4px 20px rgba(161,0,255,0.3);
+}
 @keyframes confettiFloat {
   0%{transform:translateY(0) rotate(0deg);opacity:1;}
   100%{transform:translateY(-120px) rotate(720deg);opacity:0;}
@@ -659,6 +683,7 @@ body {
         <li>Your responses will be treated with <strong>confidentiality</strong> and will not be shared outside the initiative team.</li>
       </ul>
       <div class="consent-note">If you have questions about how your data will be used, please contact the Training &amp; Upskilling team before proceeding.</div>
+      <div style="font-size:10px; color:var(--acn-gray-3); text-align:right; margin-bottom:1rem; letter-spacing:0.06em;">v1.0 · July 2026 · 03:50</div>
       <div class="btn-row">
         <button class="btn btn-ghost" onclick="document.getElementById('step-consent').classList.remove('active'); document.getElementById('step-register').classList.add('active');">← Go back</button>
         <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="acceptConsent()">I understand and agree →</button>
@@ -728,7 +753,7 @@ body {
     </div>
     <div class="eval-counter" id="eval-counter">1 / 20</div>
   </div>
-  <div id="encouragement-banner" style="display:none; background:var(--acn-purple); color:white; text-align:center; padding:10px 2rem; font-size:13px; font-weight:600; letter-spacing:0.04em; animation:fadeIn 0.4s ease;"></div>
+
   <div class="main eval-wrap">
     <div id="question-container"></div>
   </div>
@@ -768,6 +793,7 @@ body {
   <span style="font-size:11px;color:#555;">Issues? Contact <strong style="color:#818180;">JuanJo Camacho</strong> via Teams</span>
 </div>
 
+<div id="encouragement-toast"></div>
 </div><!-- /app -->
 <script>
 
@@ -913,6 +939,26 @@ const QUESTIONS = [
     correct:3, explanation:'Professional follow-up emails avoid accusatory language ("you have not responded") and urgency pressure. Instead, they use neutral, collaborative framing that preserves the relationship while conveying importance.', inPractice:'Before sending a follow-up, remove any language that implies blame or urgency — it protects the relationship.' }
 ];
 
+// ── Shuffle voice questions keeping MC positions ──────────────────────────
+function buildShuffledQuestions(questions) {
+  const voiceQs = questions.filter(q => q.type === 'voice');
+  const mcQs = questions.filter(q => q.type === 'mc');
+  // Shuffle voice questions only
+  for (let i = voiceQs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [voiceQs[i], voiceQs[j]] = [voiceQs[j], voiceQs[i]];
+  }
+  // Rebuild interleaved array in original pattern
+  const result = [];
+  let vi = 0, mi = 0;
+  questions.forEach(q => {
+    if (q.type === 'voice') result.push(voiceQs[vi++]);
+    else result.push(mcQs[mi++]);
+  });
+  return result;
+}
+const QUESTIONS_SHUFFLED = buildShuffledQuestions(QUESTIONS);
+
 // ── State ──────────────────────────────────────────────────────────────────
 let collab = {};
 let micStream = null;
@@ -925,15 +971,38 @@ let evalTimer = null;
 let currentQIdx = 0;
 let mcAnswers = {};
 let voiceAnswerCount = 0;
-const TOTAL_Q = QUESTIONS.length;
+const TOTAL_Q = QUESTIONS_SHUFFLED.length;
 
 // ── Registration ───────────────────────────────────────────────────────────
 function goToMicCheck() {
-  const name = document.getElementById('reg-name').value.trim();
-  const eid  = document.getElementById('reg-eid').value.trim();
-  const cl   = document.getElementById('reg-cl').value.trim();
-  if (!name||!eid) { alert('Please fill in your full name and EID.'); return; }
-  collab = { name, eid, cl };
+  const nameEl = document.getElementById('reg-name');
+  const eidEl  = document.getElementById('reg-eid');
+  const clEl   = document.getElementById('reg-cl');
+  let valid = true;
+  [nameEl, eidEl].forEach(el => {
+    const errId = el.id + '-error';
+    let errEl = document.getElementById(errId);
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.id = errId;
+      errEl.style.cssText = 'font-size:12px;color:var(--acn-danger);margin-top:4px;font-weight:500;';
+      el.parentNode.appendChild(errEl);
+    }
+    if (!el.value.trim()) {
+      el.style.borderColor = 'var(--acn-danger)';
+      errEl.textContent = 'This field is required';
+      valid = false;
+    } else {
+      el.style.borderColor = '';
+      errEl.textContent = '';
+    }
+  });
+  if (!valid) {
+    const btn = document.getElementById('btn-continue');
+    if (btn) { btn.textContent = 'Continue →'; btn.disabled = false; }
+    return;
+  }
+  collab = { name: nameEl.value.trim(), eid: eidEl.value.trim(), cl: clEl.value.trim() };
   document.getElementById('step-register').classList.remove('active');
   document.getElementById('step-consent').classList.add('active');
 }
@@ -1029,8 +1098,16 @@ function stopWarmup() {
 function startMainEval() {
   document.getElementById('step-warmup').classList.remove('active');
   document.getElementById('step-eval').classList.add('active');
+  document.querySelector('.topbar').classList.add('compact');
   currentQIdx = 0;
-  renderQuestion();
+  // Show "check started" flash
+  const container = document.getElementById('question-container');
+  container.innerHTML = `<div style="background:var(--acn-black);color:white;text-align:center;padding:2.5rem;margin-bottom:1.5rem;animation:stepFadeIn 0.4s ease;">
+    <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--acn-purple);margin-bottom:8px;">English Proficiency Check</div>
+    <div style="font-size:22px;font-weight:700;">Check started — you're on.</div>
+    <div style="font-size:13px;color:#818180;margin-top:8px;">Speak naturally and in English. Take a breath.</div>
+  </div>`;
+  setTimeout(() => renderQuestion(), 2000);
 }
 
 // ── Question renderer ──────────────────────────────────────────────────────
@@ -1050,19 +1127,19 @@ const ENCOURAGEMENTS = {
 
 function renderQuestion() {
   updateProgress();
-  const q = QUESTIONS[currentQIdx];
+  const q = QUESTIONS_SHUFFLED[currentQIdx];
   const container = document.getElementById('question-container');
   // Show encouragement at milestones
   const msg = ENCOURAGEMENTS[currentQIdx];
-  const banner = document.getElementById('encouragement-banner');
-  if (banner) {
-    if (msg) {
-      banner.textContent = '✦ ' + msg;
-      banner.style.display = 'block';
-      setTimeout(() => { banner.style.display = 'none'; }, 4000);
-    } else {
-      banner.style.display = 'none';
-    }
+  const toast = document.getElementById('encouragement-toast');
+  if (toast && msg) {
+    toast.textContent = '✦ ' + msg;
+    toast.style.display = 'block';
+    toast.style.animation = 'toastIn 0.35s ease';
+    setTimeout(() => {
+      toast.style.animation = 'toastOut 0.35s ease forwards';
+      setTimeout(() => { toast.style.display = 'none'; }, 350);
+    }, 3500);
   }
   if (q.type==='voice') renderVoiceQ(q, container);
   else {
@@ -1098,9 +1175,9 @@ function renderVoiceQ(q, container) {
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-danger" id="btn-rec-${partId}" onclick="startRec('${partId}')">⏺ Start recording</button>
+        <button class="btn btn-primary" id="btn-rec-${partId}" onclick="startRec('${partId}')">⏺ Start recording</button>
         <button class="btn btn-success" id="btn-stop-${partId}" style="display:none;" onclick="stopRec('${partId}')">⏹ Stop recording</button>
-        <button class="btn btn-primary" id="btn-next-voice" style="display:none;" onclick="nextQuestion()">Next →</button>
+        <button class="btn btn-ghost" id="btn-next-voice" style="display:none;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>`;
 
@@ -1138,7 +1215,7 @@ function selectMC(idx, correct) {
   clearInterval(mcTimerInterval);
   mcAnswers[currentQIdx] = idx===correct;
   const fb = document.getElementById('mc-feedback');
-  const q = QUESTIONS[currentQIdx];
+  const q = QUESTIONS_SHUFFLED[currentQIdx];
   fb.className = 'mc-feedback visible ' + (idx===correct?'alert alert-success':'alert alert-warn');
   fb.innerHTML = (idx===correct?'✓ Correct. ':'✗ Not quite. ') + q.explanation;
   document.getElementById('btn-next-mc').style.display='inline-flex';
@@ -1169,7 +1246,7 @@ function startRec(partId) {
     document.getElementById('rlabel-'+partId).textContent='Recording complete';
     document.getElementById('btn-stop-'+partId).style.display='none';
     document.getElementById('btn-stop-'+partId).classList.remove('btn-stop-active');
-    document.getElementById('btn-next-voice').style.display='inline-flex';
+    const nextBtn = document.getElementById('btn-next-voice'); nextBtn.style.display='inline-flex'; nextBtn.classList.add('btn-primary'); nextBtn.classList.remove('btn-ghost');
     stopWaveform(partId); stopRecTimer(partId);
     clearInterval(evalTimer); // stop countdown only when recording ends
   };
@@ -1381,6 +1458,7 @@ async function uploadAllAudios() {
 }
 
 async function submitEval() {
+  document.querySelector('.topbar').classList.remove('compact');
   document.getElementById('step-eval').classList.remove('active');
   document.getElementById('step-results').classList.add('active');
   document.getElementById('results-loading').style.display='none';
@@ -1426,6 +1504,7 @@ async function uploadToDriveManual() {
     if (uploaded === total) {
       const firstName = (collab && collab.name) ? collab.name.split(' ')[0] : 'there';
       msgEl.innerHTML = `
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.2 43" height="20" style="margin-bottom:1.5rem;"><style>.rl{fill:#A100FF;}</style><g><polygon class="rl" points="95.1,12 104.5,8.5 95.1,4.9 95.1,0 111.2,6.5 111.2,10.5 95.1,17"/><path fill="#000000" d="M6.2,43C2.8,43,0,41.3,0,37.5v-0.2c0-4.6,4-6.2,8.9-6.2h2.3v-0.9c0-1.9-0.8-3-2.8-3c-1.8,0-2.7,1-2.8,2.4h-5c0.4-4.2,3.7-6.2,8.1-6.2c4.5,0,7.8,1.9,7.8,6.6v12.6h-5.1v-2.2C10.4,41.8,8.7,43,6.2,43z M11.2,36.4v-1.8H9.1c-2.6,0-3.9,0.7-3.9,2.4v0.2c0,1.3,0.8,2.2,2.6,2.2C9.6,39.3,11.2,38.3,11.2,36.4z M28.4,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C36.4,40,33.5,43,28.4,43z M48,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C56,40,53.1,43,48,43z M67.7,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3H63.9c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C75.6,40.3,72.6,43,67.7,43z M64,31H71c-0.1-2.8-1.4-4-3.5-4C65.9,27.1,64.4,28,64,31z M79.4,23.8h5.3v2.8c0.9-1.8,2.8-3.2,5.7-3.2c3.4,0,5.7,2.1,5.7,6.6v12.6h-5.3V30.8c0-2.2-0.9-3.2-2.8-3.2c-1.8,0-3.3,1.1-3.3,3.5v11.5h-5.3V23.8z M105.8,18.1v5.7h3.6v3.9h-3.6v8.9c0,1.4,0.6,2.1,1.9,2.1c0.8,0,1.3-0.1,1.8-0.3v4.1c-0.6,0.2-1.7,0.4-3,0.4c-4.1,0-6-1.9-6-5.7v-9.5h-2.2v-3.9h2.2v-3.5L105.8,18.1z M129.2,42.6H124v-2.8c-0.9,1.8-2.7,3.2-5.5,3.2c-3.4,0-5.9-2.1-5.9-6.5V23.8h5.3v12c0,2.2,0.9,3.2,2.7,3.2c1.8,0,3.3-1.2,3.3-3.5V23.8h5.3V42.6z M133.1,23.8h5.3v3.5c1.1-2.5,2.9-3.7,5.7-3.7v5.2c-3.6,0-5.7,1.1-5.7,4.2v9.7h-5.3V23.8z M154.8,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3h-12.2c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C162.6,40.3,159.7,43,154.8,43z M151,31h7.1c-0.1-2.8-1.4-4-3.5-4C153,27.1,151.5,28,151,31z"/></g></svg>
         <div style="font-size:56px; margin-bottom:1rem; animation:confettiBounce 0.6s ease;">✅</div>
         <h2 style="font-size:22px; font-weight:700; margin-bottom:10px;">Well done, ${firstName}!</h2>
         <p style="font-size:15px; color:#444; margin-bottom:8px; line-height:1.7;">Your recordings are on their way to the team.<br>We'll be in touch soon with something designed specifically for you.</p>
@@ -1634,15 +1713,15 @@ function buildCircularTimer(partId) {
             stroke-dasharray="${C}" stroke-dashoffset="0" id="timer-circle-${partId}"
             stroke-linecap="round"/>
         </svg>
-        <div class="timer-display" id="t-display-${partId}">2:00<small>remaining</small></div>
+        <div class="timer-display" id="t-display-${partId}">2:00</div>
       </div>
-      <div class="timer-label-text">Time remaining</div>
+      <div class="timer-label-text" id="timer-label-${partId}">Time remaining</div>
     </div>`;
 }
 
 function getQuestionDifficulty(idx) {
   const voiceIdxs = [];
-  QUESTIONS.forEach((q, i) => { if (q.type === 'voice') voiceIdxs.push(i); });
+  QUESTIONS_SHUFFLED.forEach((q, i) => { if (q.type === 'voice') voiceIdxs.push(i); });
   const pos = voiceIdxs.indexOf(idx);
   if (pos < 3) return { label: 'Foundation', color: '#059669' };
   if (pos < 7) return { label: 'Application', color: '#d97706' };
@@ -1693,8 +1772,13 @@ function renderVoiceQ(q, container) {
       </div>
       <div class="q-title">${q.question}</div>
       <div class="scenario-box">${q.scenario}</div>
-      <div style="font-size:12px; color:var(--acn-purple); font-weight:600; letter-spacing:0.05em; margin-bottom:1rem; display:flex; align-items:center; gap:6px;">
-        <span>›</span> Respond as if you are part of the Change Management team in this situation. Speak directly and naturally.
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:6px;">
+        <div style="font-size:12px; color:var(--acn-purple); font-weight:600; letter-spacing:0.05em; display:flex; align-items:center; gap:6px;">
+          <span>›</span> Respond as if you are part of the Change Management team in this situation. Speak directly and naturally.
+        </div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:var(--acn-black); color:var(--acn-white); padding:3px 10px;">
+          🇬🇧 Please respond in English
+        </div>
       </div>
       ${buildCircularTimer(partId)}
       <div style="border-top:1px solid var(--acn-gray-1); margin:1.25rem 0;"></div>
@@ -1712,9 +1796,9 @@ function renderVoiceQ(q, container) {
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-danger" id="btn-rec-${partId}" onclick="startRec('${partId}')">⏺ Start recording</button>
+        <button class="btn btn-primary" id="btn-rec-${partId}" onclick="startRec('${partId}')">⏺ Start recording</button>
         <button class="btn btn-success" id="btn-stop-${partId}" style="display:none;" onclick="stopRec('${partId}')">⏹ Stop recording</button>
-        <button class="btn btn-primary" id="btn-next-voice" style="display:none;" onclick="nextQuestion()">Next →</button>
+        <button class="btn btn-ghost" id="btn-next-voice" style="display:none;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>`;
   startQuestionCountdown(partId, 120);
@@ -1756,6 +1840,7 @@ function renderMCQ(q, container) {
       <div class="mc-timer-bar"><div class="mc-timer-fill" id="mc-timer-fill-${currentQIdx}"></div></div>
       ${grammarNote}
       <div class="q-title">${q.question}</div>
+      <div style="font-size:11px; color:var(--acn-gray-3); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px;">Choose the best answer</div>
       <div class="mc-options">${opts}</div>
       <div class="mc-feedback" id="mc-feedback"></div>
       <div class="btn-row">
