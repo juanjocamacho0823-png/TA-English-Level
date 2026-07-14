@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="permissions-policy" content="microphone=*">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIiBmaWxsPSIjQTEwMEZGIj7igLo8L3RleHQ+PC9zdmc+">
 <title>English Proficiency Check · Tech Adoption Capability | Accenture</title>
 <style>
 /* ── Accenture Brand Tokens ── */
@@ -193,7 +194,7 @@ body {
   font-size: 50rem;
   font-weight: 700;
   color: var(--acn-purple);
-  opacity: 0.04;
+  opacity: 0.08;
   right: -15rem;
   top: 50%;
   transform: translateY(-50%);
@@ -279,42 +280,22 @@ body {
   margin-bottom: 2rem;
 }
 .eval-progress-track {
-  display: flex;
-  align-items: center;
-  gap: 0;
   flex: 1;
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
 }
-.prog-node {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #222;
-  border: 2px solid #444;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
-  color: #666;
-  flex-shrink: 0;
-  transition: all 0.3s;
-  position: relative;
-  z-index: 1;
-}
-.prog-node.done { background: var(--acn-purple); border-color: var(--acn-purple); color: white; }
-.prog-node.active { background: var(--acn-white); border-color: var(--acn-purple); color: var(--acn-purple); box-shadow: 0 0 0 4px rgba(161,0,255,0.2); animation: pulse-node 1.5s infinite; }
-@keyframes pulse-node { 0%,100%{box-shadow:0 0 0 4px rgba(161,0,255,0.2);} 50%{box-shadow:0 0 0 8px rgba(161,0,255,0.1);} }
-.prog-line { flex: 1; height: 2px; background: #333; transition: background 0.3s; }
-.prog-line.done { background: var(--acn-purple); }
-.eval-counter { color: var(--acn-gray-3); font-size: 12px; white-space: nowrap; }
+.prog-bar-bg { height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.prog-bar-fill { height: 100%; background: var(--acn-purple); border-radius: 2px; transition: width 0.4s ease; }
+.prog-label-row { display: flex; justify-content: space-between; align-items: center; }
+.prog-label-text { color: var(--acn-gray-3); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.prog-pct-text { color: var(--acn-purple); font-size: 11px; font-weight: 700; }
+.eval-counter { color: var(--acn-white); font-size: 14px; font-weight: 600; white-space: nowrap; }
 
 /* ── Question cards ── */
 .q-card {
   background: var(--acn-white);
   border: 1.5px solid var(--acn-gray-1);
-  padding: 2rem;
+  padding: 2.25rem 2rem;
   margin: 0 auto 1.5rem;
   max-width: 760px;
 }
@@ -354,11 +335,11 @@ body {
 .scenario-box {
   background: var(--acn-gray-1);
   border-left: 3px solid var(--acn-purple);
-  padding: 1rem 1.25rem;
-  font-size: 14px;
+  padding: 1.25rem 1.5rem;
+  font-size: 15px;
   color: var(--acn-gray-4);
-  line-height: 1.7;
-  margin-bottom: 1.25rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
 }
 
 /* ── Circular timer ── */
@@ -370,14 +351,20 @@ body {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--acn-black);
   font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition: color 0.3s;
 }
+.timer-display small { font-size: 9px; font-weight: 500; color: var(--acn-gray-3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
 .timer-label-text { font-size: 11px; color: var(--acn-gray-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.q-card.urgent { background: #FFF8F8; transition: background 0.5s; }
+.q-card.urgent .timer-display { color: var(--acn-danger); }
 
 /* ── Recorder ── */
 .recorder-wrap {
@@ -390,6 +377,18 @@ body {
 .rec-dot.recording { background: var(--acn-danger); animation: blink 1s infinite; }
 .rec-dot.done { background: var(--acn-success); }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+@keyframes confettiBounce { 0%{transform:scale(0);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
+@keyframes confettiFloat {
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(-120px) rotate(720deg);opacity:0;}
+}
+.confetti-piece {
+  position:absolute;
+  width:8px;height:8px;
+  border-radius:50%;
+  animation:confettiFloat 1.2s ease-out forwards;
+}
 .rec-label { font-size: 13px; font-weight: 500; color: var(--acn-gray-4); }
 .rec-time { font-size: 13px; color: var(--acn-gray-3); margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
 .playback-wrap { display: none; align-items: center; gap: 8px; margin-top: 8px; }
@@ -409,6 +408,7 @@ body {
   background: var(--acn-white);
 }
 .mc-option:hover { border-color: var(--acn-purple); background: var(--acn-purple-light); }
+.mc-option:active { border-color: var(--acn-purple); border-width: 3px; background: var(--acn-purple-light); transform: scale(0.99); }
 .mc-option.selected { border-color: var(--acn-purple); background: var(--acn-purple-light); }
 .mc-option.correct { border-color: var(--acn-success); background: #E6F9EE; animation: flash-correct 0.3s ease; }
 .mc-option.incorrect { border-color: var(--acn-danger); background: #FFE6E6; animation: shake 0.4s ease; }
@@ -458,16 +458,16 @@ body {
   border-radius: 2px;
   animation: wave-bar 1.2s ease-in-out infinite;
 }
-.audio-bar:nth-child(1){height:20%;animation-delay:0s;}
-.audio-bar:nth-child(2){height:60%;animation-delay:0.1s;}
-.audio-bar:nth-child(3){height:100%;animation-delay:0.2s;}
-.audio-bar:nth-child(4){height:60%;animation-delay:0.3s;}
-.audio-bar:nth-child(5){height:20%;animation-delay:0.4s;}
-.audio-bar:nth-child(6){height:60%;animation-delay:0.5s;}
-.audio-bar:nth-child(7){height:100%;animation-delay:0.6s;}
-.audio-bar:nth-child(8){height:60%;animation-delay:0.7s;}
-.audio-bar:nth-child(9){height:20%;animation-delay:0.8s;}
-@keyframes wave-bar { 0%,100%{transform:scaleY(0.3);opacity:0.4;} 50%{transform:scaleY(1);opacity:1;} }
+.audio-bar:nth-child(1){height:15%;animation-delay:0s;width:3px;}
+.audio-bar:nth-child(2){height:45%;animation-delay:0.07s;width:5px;}
+.audio-bar:nth-child(3){height:80%;animation-delay:0.14s;width:4px;}
+.audio-bar:nth-child(4){height:100%;animation-delay:0.21s;width:6px;}
+.audio-bar:nth-child(5){height:65%;animation-delay:0.28s;width:4px;}
+.audio-bar:nth-child(6){height:90%;animation-delay:0.35s;width:5px;}
+.audio-bar:nth-child(7){height:40%;animation-delay:0.42s;width:3px;}
+.audio-bar:nth-child(8){height:75%;animation-delay:0.49s;width:5px;}
+.audio-bar:nth-child(9){height:25%;animation-delay:0.56s;width:4px;}
+@keyframes wave-bar { 0%,100%{transform:scaleY(0.2);opacity:0.3;} 50%{transform:scaleY(1);opacity:1;} }
 .loading-text-el { color: var(--acn-white); font-size: 18px; font-weight: 600; }
 .loading-sub-el { color: var(--acn-gray-3); font-size: 13px; }
 
@@ -510,12 +510,21 @@ body {
 
 @media (max-width: 700px) {
   .hero { grid-template-columns: 1fr; }
-  .hero-left { min-height: 280px; padding: 2.5rem 1.5rem; }
-  .hero-headline { font-size: 2rem; }
-  .hero-right { padding: 2rem 1.5rem; }
+  .hero-left { min-height: 200px; padding: 2rem 1.5rem; }
+  .hero-left::before { font-size: 16rem; right: -4rem; }
+  .hero-headline { font-size: 1.75rem; }
+  .hero-sub { display: none; }
+  .hero-stats { gap: 1.25rem; }
+  .hero-stat-num { font-size: 1.5rem; }
+  .hero-right { padding: 1.75rem 1.5rem; }
   .field-row { grid-template-columns: 1fr; }
-  .eval-header { padding: 1rem; }
-  .prog-node { width: 20px; height: 20px; font-size: 8px; }
+  .eval-header { padding: 0.75rem 1rem; }
+  .prog-node { width: 18px; height: 18px; font-size: 7px; }
+  .consent-screen::before { font-size: 24rem; }
+  .consent-card { padding: 1.75rem; }
+  .q-card { padding: 1.5rem; }
+  .timer-ring-wrap { width: 80px; height: 80px; }
+  .timer-display { font-size: 18px; }
 }
 </style>
 </head>
@@ -541,6 +550,9 @@ body {
       <div class="hero-eyebrow">Accenture · Digital Core · Tech Adoption</div>
       <h1 class="hero-headline">Your voice.<br><span>Your growth.</span></h1>
       <p class="hero-sub">This is an opportunity for us to understand your current English level and design a personalized development plan for you.</p>
+      <p style="font-size:13px; color:#555; margin-bottom:1.5rem; line-height:1.7; background:#111; padding:14px 16px; border-left:3px solid #A100FF;">
+        After completing this check, the T&amp;U team will review your recordings and reach out with your personalized development plan.
+      </p>
       <div class="hero-stats">
         <div>
           <span class="hero-stat-num">20</span>
@@ -613,9 +625,16 @@ body {
 <!-- ── STEP: Evaluation ── -->
 <div id="step-eval" class="step">
   <div class="eval-header">
-    <div id="eval-progress-nodes" class="eval-progress-track"></div>
+    <div class="eval-progress-track">
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-bar-fill" style="width:0%;"></div></div>
+      <div class="prog-label-row">
+        <span class="prog-label-text" id="prog-label-text">Question 1 of 20</span>
+        <span class="prog-pct-text" id="prog-pct-text">0%</span>
+      </div>
+    </div>
     <div class="eval-counter" id="eval-counter">1 / 20</div>
   </div>
+  <div id="encouragement-banner" style="display:none; background:var(--acn-purple); color:white; text-align:center; padding:10px 2rem; font-size:13px; font-weight:600; letter-spacing:0.04em; animation:fadeIn 0.4s ease;"></div>
   <div class="main eval-wrap">
     <div id="question-container"></div>
   </div>
@@ -629,8 +648,8 @@ body {
       <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
       <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
     </div>
-    <div class="loading-text-el">Loading…</div>
-    <div class="loading-sub-el">This may take 20–30 seconds</div>
+    <div class="loading-text-el">Processing your voice</div>
+    <div class="loading-sub-el">Almost there — hang tight</div>
   </div>
   <div id="results-content" style="display:none;">
     <div class="result-screen">
@@ -884,10 +903,29 @@ function updateProgress() {
   document.getElementById('prog-fill').style.width = pct+'%';
 }
 
+const ENCOURAGEMENTS = {
+  5:  "Great start — keep going, you're doing well!",
+  10: "Halfway there — you're doing great.",
+  15: "Almost there — just 5 more to go!",
+  19: "Last one — finish strong!"
+};
+
 function renderQuestion() {
   updateProgress();
   const q = QUESTIONS[currentQIdx];
   const container = document.getElementById('question-container');
+  // Show encouragement at milestones
+  const msg = ENCOURAGEMENTS[currentQIdx];
+  const banner = document.getElementById('encouragement-banner');
+  if (banner) {
+    if (msg) {
+      banner.textContent = '✦ ' + msg;
+      banner.style.display = 'block';
+      setTimeout(() => { banner.style.display = 'none'; }, 4000);
+    } else {
+      banner.style.display = 'none';
+    }
+  }
   if (q.type==='voice') renderVoiceQ(q, container);
   else renderMCQ(q, container);
 }
@@ -900,6 +938,7 @@ function renderVoiceQ(q, container) {
       <span class="tech-tag">${q.tech}</span>
       <h2>${q.question}</h2>
       <div class="scenario-box">${q.scenario}</div>
+      <div style="border-top:1px solid var(--acn-gray-1); margin:1.25rem 0;"></div>
       <div class="recorder-wrap">
         <div class="recorder-state">
           <div class="rec-dot" id="dot-${partId}"></div>
@@ -1034,8 +1073,12 @@ function startQuestionCountdown(partId, seconds) {
     fill.style.background = remaining < 30 ? '#dc2626' : '#A100FF';
 
     // Auto-stop and advance when timer hits 0
+    // Add urgency visual at 15s
+    const card = document.querySelector('.q-card');
+    if (remaining <= 15 && card) card.classList.add('urgent');
     if (remaining <= 0) {
       clearInterval(evalTimer);
+      if (card) card.classList.remove('urgent');
       const mr = mediaRecorders[partId];
       if (mr && mr.state === 'recording') {
         mr.stop(); // onstop will show Next button
@@ -1373,23 +1416,19 @@ function renderResults(r) {
 
 
 
-// ── Progress nodes renderer ───────────────────────────────────────────────
+// ── Progress bar renderer ─────────────────────────────────────────────────
 function updateProgress() {
   const total = TOTAL_Q;
   const current = currentQIdx;
+  const pct = Math.round((current / total) * 100);
   const counter = document.getElementById('eval-counter');
+  const fill = document.getElementById('prog-bar-fill');
+  const label = document.getElementById('prog-label-text');
+  const pctEl = document.getElementById('prog-pct-text');
   if (counter) counter.textContent = (current + 1) + ' / ' + total;
-
-  const wrap = document.getElementById('eval-progress-nodes');
-  if (!wrap) return;
-  let html = '';
-  for (let i = 0; i < total; i++) {
-    if (i > 0) html += '<div class="prog-line' + (i <= current ? ' done' : '') + '"></div>';
-    const cls = i < current ? 'done' : i === current ? 'active' : '';
-    const label = i < current ? '✓' : (i + 1);
-    html += '<div class="prog-node ' + cls + '">' + label + '</div>';
-  }
-  wrap.innerHTML = html;
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = 'Question ' + (current + 1) + ' of ' + total;
+  if (pctEl) pctEl.textContent = pct + '%';
 }
 
 // ── Circular timer renderer ──────────────────────────────────────────────
@@ -1407,7 +1446,7 @@ function buildCircularTimer(partId) {
             stroke-dasharray="${C}" stroke-dashoffset="0" id="timer-circle-${partId}"
             stroke-linecap="round"/>
         </svg>
-        <div class="timer-display" id="t-display-${partId}">2:00</div>
+        <div class="timer-display" id="t-display-${partId}">2:00<small>remaining</small></div>
       </div>
       <div class="timer-label-text">Time remaining</div>
     </div>`;
@@ -1457,7 +1496,11 @@ function renderVoiceQ(q, container) {
       </div>
       <div class="q-title">${q.question}</div>
       <div class="scenario-box">${q.scenario}</div>
+      <div style="font-size:12px; color:var(--acn-purple); font-weight:600; letter-spacing:0.05em; margin-bottom:1rem; display:flex; align-items:center; gap:6px;">
+        <span>›</span> Respond as if you are part of the Change Management team in this situation. Speak directly and naturally.
+      </div>
       ${buildCircularTimer(partId)}
+      <div style="border-top:1px solid var(--acn-gray-1); margin:1.25rem 0;"></div>
       <div class="recorder-wrap">
         <div class="recorder-state">
           <div class="rec-dot" id="dot-${partId}"></div>
@@ -1481,8 +1524,20 @@ function renderVoiceQ(q, container) {
 
 // Override renderMCQ to use tech color
 const _origRenderMC = renderMCQ;
+let mcVocabCount = 0;
+let mcGrammarCount = 0;
 function renderMCQ(q, container) {
   const techClass = getTechClass(q.tech);
+  let mcEyebrow = '';
+  if (q.tech && q.tech.toLowerCase().includes('grammar')) {
+    mcGrammarCount++;
+    mcEyebrow = `<span style="font-size:10px;color:var(--acn-gray-3);letter-spacing:0.08em;text-transform:uppercase;margin-left:auto;">Grammar check · ${mcGrammarCount} of 5</span>`;
+  } else if (q.tech && q.tech.toLowerCase().includes('vocabulary')) {
+    mcVocabCount++;
+    mcEyebrow = `<span style="font-size:10px;color:var(--acn-gray-3);letter-spacing:0.08em;text-transform:uppercase;margin-left:auto;">Vocabulary check · ${mcVocabCount} of 5</span>`;
+  } else {
+    mcEyebrow = `<span style="font-size:10px;color:var(--acn-gray-3);letter-spacing:0.08em;text-transform:uppercase;margin-left:auto;">Multiple choice</span>`;
+  }
   const opts = q.options.map((o, i) => `
     <div class="mc-option" id="opt-${i}" onclick="selectMC(${i},${q.correct})">
       <div class="mc-letter">${['A','B','C','D'][i]}</div>
@@ -1493,6 +1548,7 @@ function renderMCQ(q, container) {
       <div class="q-header">
         <span class="q-type-badge q-type-mc">● Multiple choice</span>
         <span class="tech-pill">${q.tech}</span>
+        ${mcEyebrow}
       </div>
       <div class="q-title">${q.question}</div>
       <div class="mc-options">${opts}</div>
