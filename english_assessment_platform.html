@@ -996,7 +996,7 @@ function startWarmup() {
   warmupMr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
   warmupMr.onstop = () => {
     document.getElementById('warmup-dot').className = 'rec-dot done';
-    document.getElementById('warmup-label').textContent = 'Warm-up recorded — you're ready!';
+    document.getElementById('warmup-label').textContent = 'Warm-up recorded — you\'re ready!';
     document.getElementById('warmup-stop-btn').style.display = 'none';
     document.getElementById('warmup-next-btn').style.display = 'inline-flex';
     clearInterval(warmupTimer);
