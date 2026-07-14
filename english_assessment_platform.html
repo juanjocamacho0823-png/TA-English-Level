@@ -1268,20 +1268,38 @@ async function uploadToDriveManual() {
     const uploaded = results.filter(r => r.ok).length;
     const total = results.length;
     if (uploaded === total) {
+      const firstName = (collab && collab.name) ? collab.name.split(' ')[0] : 'there';
       msgEl.innerHTML = `
-        <div style="font-size:48px; margin-bottom:1rem;">✅</div>
-        <h2 style="font-size:18px; font-weight:600; margin-bottom:8px;">You're all set!</h2>
-        <p style="font-size:14px; color:var(--ink-2); margin-bottom:4px;">Your responses have been submitted successfully.</p>
-        <p style="font-size:13px; color:var(--ink-3);">The Training &amp; Upskilling team will reach out if needed.</p>
-        <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); font-size:11px; color:var(--ink-3);">Accenture · Digital Core · Tech Adoption</div>`;
+        <div style="font-size:56px; margin-bottom:1rem; animation:confettiBounce 0.6s ease;">✅</div>
+        <h2 style="font-size:22px; font-weight:700; margin-bottom:10px;">Well done, ${firstName}!</h2>
+        <p style="font-size:15px; color:#444; margin-bottom:8px; line-height:1.7;">Your recordings are on their way to the team.<br>We'll be in touch soon with something designed specifically for you.</p>
+        <p style="font-size:13px; color:#818180; margin-bottom:1.5rem;">Thank you for taking the time to complete this.</p>
+        <div style="padding-top:1rem; border-top:1px solid #F1F1EF; font-size:11px; color:#CFCFCF; letter-spacing:0.06em; text-transform:uppercase;">Accenture · Digital Core · Tech Adoption · T&amp;U</div>`;
       msgEl.className = '';
       msgEl.style.textAlign = 'center';
+      // Fire confetti after content renders
+      setTimeout(() => {
+        const card = document.querySelector('.result-card');
+        if (card) {
+          const colors = ['#A100FF','#460073','#E6DCFF','#000000','#CFCFCF'];
+          card.style.position = 'relative';
+          card.style.overflow = 'hidden';
+          for (let i = 0; i < 22; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti-piece';
+            c.style.cssText = `background:${colors[i%5]};left:${5+Math.random()*90}%;top:${10+Math.random()*50}%;animation-delay:${Math.random()*0.5}s;animation-duration:${0.9+Math.random()*0.7}s;`;
+            card.appendChild(c);
+            setTimeout(() => c.remove(), 1800);
+          }
+        }
+      }, 100);
     } else {
       msgEl.innerHTML = `
         <div style="font-size:48px; margin-bottom:1rem;">⚠️</div>
-        <h2 style="font-size:18px; font-weight:600; margin-bottom:8px;">Partial upload</h2>
-        <p style="font-size:14px; color:var(--ink-2); margin-bottom:1rem;">Only ${uploaded} of ${total} recordings were saved. Please try again.</p>
-        <button class="btn btn-primary" onclick="uploadToDriveManual()" style="width:100%;">🔄 Retry upload</button>`;
+        <h2 style="font-size:18px; font-weight:700; margin-bottom:8px;">Partial upload</h2>
+        <p style="font-size:14px; color:#444; margin-bottom:8px;">Only ${uploaded} of ${total} recordings were saved.</p>
+        <p style="font-size:13px; color:#818180; margin-bottom:1rem;">If this keeps happening, contact <strong>JuanJo Camacho</strong> via Teams.</p>
+        <button class="btn btn-primary" onclick="uploadToDriveManual()" style="width:100%; justify-content:center;">🔄 Retry upload</button>`;
       msgEl.className = '';
       msgEl.style.textAlign = 'center';
     }
@@ -1289,10 +1307,11 @@ async function uploadToDriveManual() {
     console.error('Drive error:', e);
     if (msgEl) {
       msgEl.innerHTML = `
-        <div style="font-size:48px; margin-bottom:1rem;">❌</div>
-        <h2 style="font-size:18px; font-weight:600; margin-bottom:8px;">Connection error</h2>
-        <p style="font-size:14px; color:var(--ink-2); margin-bottom:1rem;">Could not connect to Google Drive. Please try again.</p>
-        <button class="btn btn-primary" onclick="uploadToDriveManual()" style="width:100%;">🔄 Try again</button>`;
+        <div style="font-size:48px; margin-bottom:1rem;">⚠️</div>
+        <h2 style="font-size:18px; font-weight:700; margin-bottom:8px;">Something went wrong</h2>
+        <p style="font-size:14px; color:#444; margin-bottom:8px; line-height:1.6;">Could not connect to Google Drive. Please try again.</p>
+        <p style="font-size:13px; color:#818180; margin-bottom:1.25rem;">If the problem persists, contact <strong>JuanJo Camacho</strong> via Teams for support.</p>
+        <button class="btn btn-primary" onclick="uploadToDriveManual()" style="width:100%; justify-content:center;">🔄 Try again</button>`;
       msgEl.className = '';
       msgEl.style.textAlign = 'center';
     }
