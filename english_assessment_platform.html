@@ -62,8 +62,9 @@ body {
 .main { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 3rem; }
 
 /* ── Step containers ── */
-.step { display: none; }
-.step.active { display: block; }
+.step { display: none; opacity: 0; }
+.step.active { display: block; animation: stepFadeIn 0.25s ease forwards; }
+@keyframes stepFadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
 
 /* ── Hero welcome split ── */
 .hero {
@@ -174,6 +175,17 @@ body {
 .btn-danger { background: var(--acn-danger); color: white; }
 .btn-danger:hover { background: #990000; }
 .btn-success { background: var(--acn-success); color: white; }
+.btn-stop-active {
+  background: var(--acn-danger) !important;
+  color: white;
+  animation: pulse-stop 1.5s infinite;
+  min-width: 180px;
+  justify-content: center;
+}
+@keyframes pulse-stop {
+  0%,100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(204,0,0,0); }
+}
 .btn-row { display: flex; gap: 10px; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; }
 .btn-full { width: 100%; justify-content: center; }
 
@@ -238,8 +250,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--acn-gray-1);
+  background: var(--acn-black);
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.mic-screen::before {
+  content: ">";
+  position: absolute;
+  font-size: 30rem;
+  font-weight: 700;
+  color: var(--acn-purple);
+  opacity: 0.05;
+  right: -6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+  pointer-events: none;
 }
 .mic-card {
   background: var(--acn-white);
@@ -553,10 +580,43 @@ body {
       <p style="font-size:13px; color:#555; margin-bottom:1.5rem; line-height:1.7; background:#111; padding:14px 16px; border-left:3px solid #A100FF;">
         After completing this check, the T&amp;U team will review your recordings and reach out with your personalized development plan.
       </p>
+      <div style="margin-bottom:2rem; opacity:0.4;">
+        <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="180">
+          <rect x="0" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
+          <rect x="8" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
+          <rect x="16" y="2" width="4" height="36" rx="2" fill="#A100FF"/>
+          <rect x="24" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
+          <rect x="32" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
+          <rect x="40" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
+          <rect x="48" y="0" width="4" height="40" rx="2" fill="#A100FF"/>
+          <rect x="56" y="8" width="4" height="24" rx="2" fill="#A100FF"/>
+          <rect x="64" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+          <rect x="72" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
+          <rect x="80" y="10" width="4" height="20" rx="2" fill="#A100FF"/>
+          <rect x="88" y="3" width="4" height="34" rx="2" fill="#A100FF"/>
+          <rect x="96" y="12" width="4" height="16" rx="2" fill="#A100FF"/>
+          <rect x="104" y="7" width="4" height="26" rx="2" fill="#A100FF"/>
+          <rect x="112" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+          <rect x="120" y="4" width="4" height="32" rx="2" fill="#A100FF"/>
+          <rect x="128" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
+          <rect x="136" y="15" width="4" height="10" rx="2" fill="#A100FF"/>
+          <rect x="144" y="6" width="4" height="28" rx="2" fill="#A100FF"/>
+          <rect x="152" y="11" width="4" height="18" rx="2" fill="#A100FF"/>
+          <rect x="160" y="1" width="4" height="38" rx="2" fill="#A100FF"/>
+          <rect x="168" y="9" width="4" height="22" rx="2" fill="#A100FF"/>
+          <rect x="176" y="13" width="4" height="14" rx="2" fill="#A100FF"/>
+          <rect x="184" y="5" width="4" height="30" rx="2" fill="#A100FF"/>
+          <rect x="192" y="14" width="4" height="12" rx="2" fill="#A100FF"/>
+        </svg>
+      </div>
       <div class="hero-stats">
         <div>
-          <span class="hero-stat-num">20</span>
-          <span class="hero-stat-label">Questions</span>
+          <span class="hero-stat-num">10</span>
+          <span class="hero-stat-label">Spoken</span>
+        </div>
+        <div>
+          <span class="hero-stat-num">10</span>
+          <span class="hero-stat-label">Written</span>
         </div>
         <div>
           <span class="hero-stat-num">~25</span>
@@ -606,11 +666,11 @@ body {
 
 <!-- ── STEP: Mic check ── -->
 <div id="step-miccheck" class="step">
-  <div class="mic-screen">
+  <div class="mic-screen" style="background:var(--acn-black);">
     <div class="mic-card">
       <div class="mic-icon-wrap">🎙️</div>
       <h2>Microphone check</h2>
-      <p>We need access to your microphone to record your responses. Click below and allow access when the browser asks.</p>
+      <p>Your voice is the most important part of this check. Let's make sure we can hear you clearly before we begin.</p>
       <div id="mic-status-badge" class="mic-status checking">Checking…</div>
       <div id="mic-error-detail" class="mic-error"></div>
       <canvas id="mic-preview" class="waveform" style="display:none;"></canvas>
@@ -622,6 +682,36 @@ body {
   </div>
 </div>
 
+<!-- ── STEP: Warm-up ── -->
+<div id="step-warmup" class="step">
+  <div style="min-height:calc(100vh - 60px); display:flex; align-items:center; justify-content:center; background:var(--acn-gray-1); padding:2rem;">
+    <div style="background:var(--acn-white); max-width:540px; width:100%; padding:2.5rem; border-top:4px solid var(--acn-purple); text-align:center;">
+      <div style="font-size:36px; margin-bottom:1rem;">🎙</div>
+      <div style="font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--acn-purple); margin-bottom:10px;">Warm-up · Not evaluated</div>
+      <h2 style="font-size:20px; font-weight:700; margin-bottom:10px;">Let's warm up your voice</h2>
+      <p style="font-size:14px; color:var(--acn-gray-3); line-height:1.7; margin-bottom:1.5rem;">This question is <strong>not scored</strong>. It simply helps calibrate your audio and gets you comfortable speaking before the check begins.</p>
+      <div style="background:var(--acn-gray-1); border-left:3px solid var(--acn-purple); padding:1rem 1.25rem; text-align:left; font-size:15px; color:var(--acn-gray-4); line-height:1.8; margin-bottom:1.5rem;">
+        In 30 seconds, tell us: your name, your current role, and one thing you enjoy about your work.
+      </div>
+      <div id="warmup-recorder" style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:10px;background:var(--acn-gray-1);padding:1rem;margin-bottom:8px;">
+          <div class="rec-dot" id="warmup-dot"></div>
+          <span style="font-size:13px;color:var(--acn-gray-4);" id="warmup-label">Press record when ready</span>
+          <span style="margin-left:auto;font-size:13px;color:var(--acn-gray-3);font-variant-numeric:tabular-nums;" id="warmup-time">0:00</span>
+        </div>
+        <canvas class="waveform" id="warmup-wave" style="width:100%;height:40px;"></canvas>
+      </div>
+      <div class="btn-row" style="justify-content:center;gap:10px;">
+        <button class="btn btn-danger" id="warmup-rec-btn" onclick="startWarmup()">⏺ Start recording</button>
+        <button class="btn btn-success" id="warmup-stop-btn" style="display:none;" onclick="stopWarmup()">⏹ Stop</button>
+        <button class="btn btn-primary" id="warmup-next-btn" style="display:none;" onclick="startMainEval()">Begin check →</button>
+      </div>
+      <p style="font-size:12px;color:var(--acn-gray-3);margin-top:1rem;">You can also skip this and go straight to the check.</p>
+      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px;" onclick="startMainEval()">Skip warm-up →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── STEP: Evaluation ── -->
 <div id="step-eval" class="step">
   <div class="eval-header">
@@ -629,7 +719,7 @@ body {
       <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-bar-fill" style="width:0%;"></div></div>
       <div class="prog-label-row">
         <span class="prog-label-text" id="prog-label-text">Question 1 of 20</span>
-        <span class="prog-pct-text" id="prog-pct-text">0%</span>
+        <span class="prog-pct-text" id="prog-pct-text">0%</span><span id="next-q-indicator" style="font-size:11px;margin-left:8px;font-weight:600;"></span>
       </div>
     </div>
     <div class="eval-counter" id="eval-counter">1 / 20</div>
@@ -664,11 +754,14 @@ body {
   </div>
 </div>
 
-<div class="brand-strip">
-  <span>Accenture</span><span class="sep">·</span>
-  <span>Digital Core</span><span class="sep">·</span>
-  <span>Tech Adoption</span><span class="sep">·</span>
-  <span>Training &amp; Upskilling</span>
+<div class="brand-strip" style="justify-content:space-between;">
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <span>Accenture</span><span class="sep">·</span>
+    <span>Digital Core</span><span class="sep">·</span>
+    <span>Tech Adoption</span><span class="sep">·</span>
+    <span>Training &amp; Upskilling</span>
+  </div>
+  <span style="font-size:11px;color:#555;">Issues? Contact <strong style="color:#818180;">JuanJo Camacho</strong> via Teams</span>
 </div>
 
 </div><!-- /app -->
@@ -687,7 +780,7 @@ const QUESTIONS = [
   // ── MC 1: CM Vocabulary
   { type:'mc', tech:'CM Vocabulary', question:'Which term describes the structured process of moving individuals from a current state to a desired future state in organizational change?',
     options:['Change saturation','ADKAR model','Resistance mapping','Stakeholder log'],
-    correct:1, explanation:'The ADKAR model (Awareness, Desire, Knowledge, Ability, Reinforcement) is the structured framework for moving individuals through change, developed by Prosci.' },
+    correct:1, explanation:'The ADKAR model (Awareness, Desire, Knowledge, Ability, Reinforcement) is the structured framework for moving individuals through change, developed by Prosci.', inPractice:'When planning your next rollout, map each communication to a specific ADKAR element — it sharpens your message.' },
 
   // ── VOICE 2: SAP S/4HANA
   { type:'voice', tech:'SAP S/4HANA', question:'Managing a go-live anxiety spike',
@@ -715,7 +808,7 @@ const QUESTIONS = [
       'A document listing all stakeholders and their resistance levels',
       'A communication calendar for the change program'
     ],
-    correct:1, explanation:'A sponsor roadmap details the specific visible actions — communications, meetings, recognitions — that executive sponsors must perform to demonstrate active support and drive adoption.' },
+    correct:1, explanation:'A sponsor roadmap details the specific visible actions — communications, meetings, recognitions — that executive sponsors must perform to demonstrate active support and drive adoption.', inPractice:'In your next project, create a one-page sponsor roadmap and review it monthly with your sponsor.' },
 
   // ── VOICE 4: AWS Cloud Migration
   { type:'voice', tech:'AWS Cloud Migration', question:'Communicating cloud migration to non-technical staff',
@@ -729,7 +822,7 @@ const QUESTIONS = [
       'If we implemented this now, we will see results faster.',
       'If we would implement this now, we see results faster.'
     ],
-    correct:1, explanation:'The first conditional uses simple present in the if-clause ("if we implement") and will + infinitive in the result clause ("we will see"). This expresses a real, likely future condition.' },
+    correct:1, explanation:'The first conditional uses simple present in the if-clause ("if we implement") and will + infinitive in the result clause ("we will see"). This expresses a real, likely future condition.', inPractice:'Use this structure in client proposals: "If we start now, we will reduce resistance by go-live."' },
 
   // ── VOICE 5: Oracle ERP
   { type:'voice', tech:'Oracle ERP', question:'Training design for a multi-country rollout',
@@ -757,7 +850,7 @@ const QUESTIONS = [
       'We completed the stakeholder analysis.',
       'The stakeholder analysis got completed.'
     ],
-    correct:1, explanation:'Formal project communications often use passive voice to focus on the action rather than who performed it. "Has been completed" is the correct present perfect passive form.' },
+    correct:1, explanation:'Formal project communications often use passive voice to focus on the action rather than who performed it. "Has been completed" is the correct present perfect passive form.', inPractice:'In your next status report, replace "we did X" with "X has been completed" for a more formal tone.' },
 
   // ── VOICE 7: Microsoft Copilot
   { type:'voice', tech:'Microsoft Copilot', question:'Measuring behavior change, not just tool usage',
@@ -771,7 +864,7 @@ const QUESTIONS = [
       'A stakeholder who is actively blocking the change initiative',
       'The final go-live date of a technology implementation'
     ],
-    correct:1, explanation:'A "burning platform" is a metaphor for a compelling case for change — a crisis, competitive threat, or urgent problem that makes maintaining the current state more dangerous than changing.' },
+    correct:1, explanation:'A "burning platform" is a metaphor for a compelling case for change — a crisis, competitive threat, or urgent problem that makes maintaining the current state more dangerous than changing.', inPractice:'Build your case for change by identifying the burning platform — the risk of NOT changing.' },
 
   // ── VOICE 8: Multi-technology
   { type:'voice', tech:'Multi-technology Transformation', question:'Managing change fatigue in a simultaneous multi-platform rollout',
@@ -785,7 +878,7 @@ const QUESTIONS = [
       'The director, that is responsible for the budget, approved the plan.',
       'The director, whom is responsible for the budget, approved the plan.'
     ],
-    correct:1, explanation:'"Who" is used for people in relative clauses (not "which" or "that" in formal writing). "Whom" would be used if it were the object of the clause, not the subject.' },
+    correct:1, explanation:'"Who" is used for people in relative clauses (not "which" or "that" in formal writing). "Whom" would be used if it were the object of the clause, not the subject.', inPractice:'Practice this in meeting notes: "The sponsor, who approved the budget, will lead the kickoff."' },
 
   // ── VOICE 9: Executive Sponsorship
   { type:'voice', tech:'Executive Sponsorship', question:'Activating a passive executive sponsor',
@@ -813,7 +906,7 @@ const QUESTIONS = [
       'As I mentioned before, this is urgent and needs your immediate response.',
       'I need you to reply to this email as soon as possible.'
     ],
-    correct:1, explanation:'Professional follow-up emails avoid accusatory language ("you have not responded") and urgency pressure. Instead, they use neutral, collaborative framing that preserves the relationship while conveying importance.' }
+    correct:1, explanation:'Professional follow-up emails avoid accusatory language ("you have not responded") and urgency pressure. Instead, they use neutral, collaborative framing that preserves the relationship while conveying importance.', inPractice:'Before sending a follow-up, remove any language that implies blame or urgency — it protects the relationship.' }
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -888,10 +981,51 @@ function animatePreview(canvas, stream) {
   draw();
 }
 
+let warmupMr = null;
+let warmupTimer = null;
+
 function startEvaluation() {
   document.getElementById('step-miccheck').classList.remove('active');
+  document.getElementById('step-warmup').classList.add('active');
+}
+
+function startWarmup() {
+  if (!micStream) return;
+  const chunks = [];
+  warmupMr = new MediaRecorder(micStream, { mimeType: getSupportedMimeType() || 'audio/webm' });
+  warmupMr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  warmupMr.onstop = () => {
+    document.getElementById('warmup-dot').className = 'rec-dot done';
+    document.getElementById('warmup-label').textContent = 'Warm-up recorded — you're ready!';
+    document.getElementById('warmup-stop-btn').style.display = 'none';
+    document.getElementById('warmup-next-btn').style.display = 'inline-flex';
+    clearInterval(warmupTimer);
+  };
+  warmupMr.start(100);
+  document.getElementById('warmup-rec-btn').style.display = 'none';
+  document.getElementById('warmup-stop-btn').style.display = 'inline-flex';
+  document.getElementById('warmup-dot').className = 'rec-dot recording';
+  document.getElementById('warmup-label').textContent = 'Recording…';
+  let s = 0;
+  warmupTimer = setInterval(() => {
+    s++;
+    document.getElementById('warmup-time').textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    if (s >= 30) { if (warmupMr.state === 'recording') warmupMr.stop(); clearInterval(warmupTimer); }
+  }, 1000);
+  const wc = document.getElementById('warmup-wave');
+  if (wc && micStream) startWaveform(wc, micStream, 'warmup');
+}
+
+function stopWarmup() {
+  if (warmupMr && warmupMr.state === 'recording') warmupMr.stop();
+  clearInterval(warmupTimer);
+  stopWaveform('warmup');
+}
+
+function startMainEval() {
+  document.getElementById('step-warmup').classList.remove('active');
   document.getElementById('step-eval').classList.add('active');
-  currentQIdx=0;
+  currentQIdx = 0;
   renderQuestion();
 }
 
@@ -945,7 +1079,8 @@ function renderVoiceQ(q, container) {
           <div class="rec-label" id="rlabel-${partId}">Press record when ready</div>
           <div class="rec-time" id="rtime-${partId}">0:00</div>
         </div>
-        <canvas class="waveform" id="wave-${partId}"></canvas>
+        <canvas class="waveform" id="wave-${partId}" style="display:none;"></canvas>
+        <div id="wave-placeholder-${partId}" style="width:100%;height:48px;background:var(--acn-gray-1);display:flex;align-items:center;justify-content:center;"><span style="font-size:12px;color:var(--acn-gray-3);letter-spacing:0.04em;">Your voice will appear here</span></div>
         <div class="timer-wrap" id="timer-wrap-${partId}">
           <div class="timer-label"><span>Time remaining</span><span id="t-display-${partId}">2:00</span></div>
           <div class="timer-track"><div class="timer-fill" id="t-fill-${partId}" style="width:100%;"></div></div>
@@ -1025,6 +1160,7 @@ function startRec(partId) {
     document.getElementById('dot-'+partId).className='rec-dot done';
     document.getElementById('rlabel-'+partId).textContent='Recording complete';
     document.getElementById('btn-stop-'+partId).style.display='none';
+    document.getElementById('btn-stop-'+partId).classList.remove('btn-stop-active');
     document.getElementById('btn-next-voice').style.display='inline-flex';
     stopWaveform(partId); stopRecTimer(partId);
     clearInterval(evalTimer); // stop countdown only when recording ends
@@ -1033,10 +1169,12 @@ function startRec(partId) {
   voiceAnswerCount++;
   document.getElementById('btn-rec-'+partId).style.display='none';
   document.getElementById('btn-stop-'+partId).style.display='inline-flex';
+  document.getElementById('btn-stop-'+partId).classList.add('btn-stop-active');
   document.getElementById('dot-'+partId).className='rec-dot recording';
   document.getElementById('rlabel-'+partId).textContent='Recording — speak your answer now';
   const waveCanvas = document.getElementById('wave-'+partId);
-  if (waveCanvas) startWaveform(waveCanvas, micStream, partId);
+  const wavePlaceholder = document.getElementById('wave-placeholder-'+partId);
+  if (waveCanvas) { waveCanvas.style.display='block'; if(wavePlaceholder) wavePlaceholder.style.display='none'; startWaveform(waveCanvas, micStream, partId); }
   startRecTimer(partId);
   // Auto-stop at 2 min as safety net (countdown also stops it)
   setTimeout(()=>{if(mr.state==='recording'){mr.stop();}},120000);
@@ -1448,6 +1586,15 @@ function updateProgress() {
   if (fill) fill.style.width = pct + '%';
   if (label) label.textContent = 'Question ' + (current + 1) + ' of ' + total;
   if (pctEl) pctEl.textContent = pct + '%';
+  // Show next question type indicator
+  const nextQ = QUESTIONS[current + 1];
+  const nextIndicator = document.getElementById('next-q-indicator');
+  if (nextIndicator && nextQ) {
+    nextIndicator.textContent = nextQ.type === 'voice' ? '  Next: 🎙' : '  Next: ●';
+    nextIndicator.style.color = nextQ.type === 'voice' ? '#ff9999' : '#c2a0ff';
+  } else if (nextIndicator) {
+    nextIndicator.textContent = '';
+  }
 }
 
 // ── Circular timer renderer ──────────────────────────────────────────────
@@ -1469,6 +1616,15 @@ function buildCircularTimer(partId) {
       </div>
       <div class="timer-label-text">Time remaining</div>
     </div>`;
+}
+
+function getQuestionDifficulty(idx) {
+  const voiceIdxs = [];
+  QUESTIONS.forEach((q, i) => { if (q.type === 'voice') voiceIdxs.push(i); });
+  const pos = voiceIdxs.indexOf(idx);
+  if (pos < 3) return { label: 'Foundation', color: '#059669' };
+  if (pos < 7) return { label: 'Application', color: '#d97706' };
+  return { label: 'Advanced', color: '#CC0000' };
 }
 
 // Override startQuestionCountdown to update circular timer
@@ -1511,7 +1667,10 @@ function renderVoiceQ(q, container) {
     <div class="q-card ${techClass}">
       <div class="q-header">
         <span class="q-type-badge q-type-voice">🎙 Spoken response</span>
-        <span class="tech-pill">${q.tech}</span>
+        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${q.tech}</span>
+        <span style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${getQuestionDifficulty(currentQIdx).color};">
+          ${getQuestionDifficulty(currentQIdx).label}
+        </span>
       </div>
       <div class="q-title">${q.question}</div>
       <div class="scenario-box">${q.scenario}</div>
@@ -1526,7 +1685,8 @@ function renderVoiceQ(q, container) {
           <div class="rec-label" id="rlabel-${partId}">Press record when ready</div>
           <div class="rec-time" id="rtime-${partId}">0:00</div>
         </div>
-        <canvas class="waveform" id="wave-${partId}"></canvas>
+        <canvas class="waveform" id="wave-${partId}" style="display:none;"></canvas>
+        <div id="wave-placeholder-${partId}" style="width:100%;height:48px;background:var(--acn-gray-1);display:flex;align-items:center;justify-content:center;"><span style="font-size:12px;color:var(--acn-gray-3);letter-spacing:0.04em;">Your voice will appear here</span></div>
         <div class="playback-wrap" id="pb-${partId}">
           <button class="mini-play" onclick="playBack('${partId}')">▶</button>
           <span style="font-size:12px;color:#818180;">Listen to your recording</span>
@@ -1557,6 +1717,11 @@ function renderMCQ(q, container) {
   } else {
     mcEyebrow = `<span style="font-size:10px;color:var(--acn-gray-3);letter-spacing:0.08em;text-transform:uppercase;margin-left:auto;">Multiple choice</span>`;
   }
+  // First grammar question gets an extra note
+  let grammarNote = '';
+  if (q.tech && q.tech.toLowerCase().includes('grammar') && mcGrammarCount === 1) {
+    grammarNote = `<div style="font-size:12px;color:var(--acn-gray-3);background:var(--acn-gray-1);padding:8px 12px;margin-bottom:1rem;border-left:3px solid var(--acn-gray-2);">These questions assess how you write in formal English contexts — a key skill in stakeholder communication.</div>`;
+  }
   const opts = q.options.map((o, i) => `
     <div class="mc-option" id="opt-${i}" onclick="selectMC(${i},${q.correct})">
       <div class="mc-letter">${['A','B','C','D'][i]}</div>
@@ -1566,9 +1731,10 @@ function renderMCQ(q, container) {
     <div class="q-card ${techClass}">
       <div class="q-header">
         <span class="q-type-badge q-type-mc">● Multiple choice</span>
-        <span class="tech-pill">${q.tech}</span>
+        <span class="tech-pill" style="background:${getTechColor(q.tech)};">${q.tech}</span>
         ${mcEyebrow}
       </div>
+      ${grammarNote}
       <div class="q-title">${q.question}</div>
       <div class="mc-options">${opts}</div>
       <div class="mc-feedback" id="mc-feedback"></div>
@@ -1576,6 +1742,19 @@ function renderMCQ(q, container) {
         <button class="btn btn-primary" id="btn-next-mc" style="display:none;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>`;
+}
+
+function getTechColor(tech) {
+  if (!tech) return '#000000';
+  const t = tech.toLowerCase();
+  if (t.includes('microsoft') || t.includes('copilot') || t.includes('teams')) return '#00A4EF';
+  if (t.includes('sap')) return '#008FD3';
+  if (t.includes('google')) return '#34A853';
+  if (t.includes('aws') || t.includes('cloud')) return '#FF9900';
+  if (t.includes('oracle')) return '#F80000';
+  if (t.includes('ai') || t.includes('adoption')) return '#A100FF';
+  if (t.includes('grammar')) return '#0078D4';
+  return '#333333';
 }
 
 function getTechClass(tech) {
