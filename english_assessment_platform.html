@@ -972,7 +972,7 @@ function selectMC(idx, correct) {
 
 function startRec(partId) {
   if (!micStream) { alert('Microphone not available.'); return; }
-  clearInterval(evalTimer);
+  // DO NOT clear evalTimer here — countdown must keep running
   const chunks=[];
   const mimeType = getSupportedMimeType();
   const mr = new MediaRecorder(micStream, mimeType ? { mimeType } : {});
@@ -988,7 +988,7 @@ function startRec(partId) {
     document.getElementById('btn-stop-'+partId).style.display='none';
     document.getElementById('btn-next-voice').style.display='inline-flex';
     stopWaveform(partId); stopRecTimer(partId);
-    clearInterval(evalTimer);
+    clearInterval(evalTimer); // stop countdown only when recording ends
   };
   mr.start(100);
   voiceAnswerCount++;
@@ -996,12 +996,10 @@ function startRec(partId) {
   document.getElementById('btn-stop-'+partId).style.display='inline-flex';
   document.getElementById('dot-'+partId).className='rec-dot recording';
   document.getElementById('rlabel-'+partId).textContent='Recording — speak your answer now';
-  // Show and start timer NOW (when recording starts)
-  document.getElementById('timer-wrap-'+partId).style.display='block';
-  startEvalTimerQ(partId, 120);
-  startWaveform(document.getElementById('wave-'+partId), micStream, partId);
+  const waveCanvas = document.getElementById('wave-'+partId);
+  if (waveCanvas) startWaveform(waveCanvas, micStream, partId);
   startRecTimer(partId);
-  // Auto-stop at 2 min
+  // Auto-stop at 2 min as safety net (countdown also stops it)
   setTimeout(()=>{if(mr.state==='recording'){mr.stop();}},120000);
 }
 
@@ -1196,9 +1194,10 @@ async function uploadAllAudios() {
 async function submitEval() {
   document.getElementById('step-eval').classList.remove('active');
   document.getElementById('step-results').classList.add('active');
-  document.getElementById('results-loading').style.display='flex'; document.getElementById('results-content').style.display='none';
+  document.getElementById('results-loading').style.display='flex';
   document.getElementById('results-content').style.display='none';
-  document.querySelector('.loading-text').textContent = 'Loading…';
+  const loadingText = document.querySelector('.loading-text-el');
+  if (loadingText) loadingText.textContent = 'Loading…';
   const result = await evaluateWithClaude();
   await saveToSheets(result);
   renderResults(result);
