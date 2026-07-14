@@ -779,8 +779,8 @@ const QUESTIONS = [
 
   // ── MC 1: CM Vocabulary
   { type:'mc', tech:'CM Vocabulary', question:'Which term describes the structured process of moving individuals from a current state to a desired future state in organizational change?',
-    options:['Change saturation','ADKAR model','Resistance mapping','Stakeholder log'],
-    correct:1, explanation:'The ADKAR model (Awareness, Desire, Knowledge, Ability, Reinforcement) is the structured framework for moving individuals through change, developed by Prosci.', inPractice:'When planning your next rollout, map each communication to a specific ADKAR element — it sharpens your message.' },
+    options:['ADKAR model','Change saturation','Resistance mapping','Stakeholder log'],
+    correct:0, explanation:'The ADKAR model (Awareness, Desire, Knowledge, Ability, Reinforcement) is the structured framework for moving individuals through change, developed by Prosci.', inPractice:'When planning your next rollout, map each communication to a specific ADKAR element — it sharpens your message.' },
 
   // ── VOICE 2: SAP S/4HANA
   { type:'voice', tech:'SAP S/4HANA', question:'Managing a go-live anxiety spike',
@@ -790,11 +790,11 @@ const QUESTIONS = [
   { type:'mc', tech:'Professional Grammar', question:'Choose the most professional way to express disagreement in a client meeting:',
     options:[
       'You are wrong about this approach.',
-      'I see your point, however I would like to suggest an alternative perspective for consideration.',
       'That is not a good idea at all.',
+      'I see your point, however I would like to suggest an alternative perspective for consideration.',
       'I think you should reconsider what you just said.'
     ],
-    correct:1, explanation:'Professional disagreement uses hedging language ("I would like to suggest"), acknowledges the other view first, and avoids direct confrontation. This maintains the relationship while opening dialogue.' },
+    correct:2, explanation:'Professional disagreement uses hedging language ("I would like to suggest"), acknowledges the other view first, and avoids direct confrontation. This maintains the relationship while opening dialogue.' },
 
   // ── VOICE 3: Google Workspace
   { type:'voice', tech:'Google Workspace', question:'Competing tools conflict during migration',
@@ -804,11 +804,11 @@ const QUESTIONS = [
   { type:'mc', tech:'CM Vocabulary', question:'What is a "sponsor roadmap" in Change Management?',
     options:[
       'A project timeline showing key milestones',
-      'A plan outlining specific actions executive sponsors must take to support the change',
       'A document listing all stakeholders and their resistance levels',
-      'A communication calendar for the change program'
+      'A communication calendar for the change program',
+      'A plan outlining specific actions executive sponsors must take to support the change'
     ],
-    correct:1, explanation:'A sponsor roadmap details the specific visible actions — communications, meetings, recognitions — that executive sponsors must perform to demonstrate active support and drive adoption.', inPractice:'In your next project, create a one-page sponsor roadmap and review it monthly with your sponsor.' },
+    correct:3, explanation:'A sponsor roadmap details the specific visible actions — communications, meetings, recognitions — that executive sponsors must perform to demonstrate active support and drive adoption.', inPractice:'In your next project, create a one-page sponsor roadmap and review it monthly with your sponsor.' },
 
   // ── VOICE 4: AWS Cloud Migration
   { type:'voice', tech:'AWS Cloud Migration', question:'Communicating cloud migration to non-technical staff',
@@ -817,12 +817,12 @@ const QUESTIONS = [
   // ── MC 4: Grammar
   { type:'mc', tech:'Professional Grammar', question:'Which sentence uses the correct conditional form for a business recommendation?',
     options:[
-      'If we will implement this now, we would see results faster.',
       'If we implement this now, we will see results faster.',
+      'If we will implement this now, we would see results faster.',
       'If we implemented this now, we will see results faster.',
       'If we would implement this now, we see results faster.'
     ],
-    correct:1, explanation:'The first conditional uses simple present in the if-clause ("if we implement") and will + infinitive in the result clause ("we will see"). This expresses a real, likely future condition.', inPractice:'Use this structure in client proposals: "If we start now, we will reduce resistance by go-live."' },
+    correct:0, explanation:'The first conditional uses simple present in the if-clause ("if we implement") and will + infinitive in the result clause ("we will see"). This expresses a real, likely future condition.', inPractice:'Use this structure in client proposals: "If we start now, we will reduce resistance by go-live."' },
 
   // ── VOICE 5: Oracle ERP
   { type:'voice', tech:'Oracle ERP', question:'Training design for a multi-country rollout',
@@ -832,11 +832,11 @@ const QUESTIONS = [
   { type:'mc', tech:'CM Vocabulary', question:'What does "change saturation" refer to in an organization?',
     options:[
       'When employees have fully adopted a new technology',
-      'When an organization is experiencing more change than its capacity to absorb',
       'When a change program has reached its budget limit',
+      'When an organization is experiencing more change than its capacity to absorb',
       'When stakeholder engagement reaches maximum levels'
     ],
-    correct:1, explanation:'Change saturation occurs when the volume, speed, or complexity of simultaneous changes exceeds an organization\'s capacity to absorb them, leading to fatigue, resistance, and failed adoptions.' },
+    correct:2, explanation:'Change saturation occurs when the volume, speed, or complexity of simultaneous changes exceeds an organization\'s capacity to absorb them, leading to fatigue, resistance, and failed adoptions.' },
 
   // ── VOICE 6: AI Adoption
   { type:'voice', tech:'AI Adoption', question:'Building trust in AI tools among skeptical employees',
@@ -846,11 +846,11 @@ const QUESTIONS = [
   { type:'mc', tech:'Professional Grammar', question:'Select the correct passive voice sentence for a formal project update:',
     options:[
       'The team has completed the stakeholder analysis.',
-      'The stakeholder analysis has been completed by the team.',
       'We completed the stakeholder analysis.',
-      'The stakeholder analysis got completed.'
+      'The stakeholder analysis got completed.',
+      'The stakeholder analysis has been completed by the team.'
     ],
-    correct:1, explanation:'Formal project communications often use passive voice to focus on the action rather than who performed it. "Has been completed" is the correct present perfect passive form.', inPractice:'In your next status report, replace "we did X" with "X has been completed" for a more formal tone.' },
+    correct:3, explanation:'Formal project communications often use passive voice to focus on the action rather than who performed it. "Has been completed" is the correct present perfect passive form.', inPractice:'In your next status report, replace "we did X" with "X has been completed" for a more formal tone.' },
 
   // ── VOICE 7: Microsoft Copilot
   { type:'voice', tech:'Microsoft Copilot', question:'Measuring behavior change, not just tool usage',
@@ -859,12 +859,12 @@ const QUESTIONS = [
   // ── MC 7: CM Vocabulary
   { type:'mc', tech:'CM Vocabulary', question:'In the context of Change Management, what is a "burning platform"?',
     options:[
-      'A legacy IT system that needs urgent replacement',
       'A compelling crisis or urgent reason that makes the status quo unsustainable and drives the need for change',
+      'A legacy IT system that needs urgent replacement',
       'A stakeholder who is actively blocking the change initiative',
       'The final go-live date of a technology implementation'
     ],
-    correct:1, explanation:'A "burning platform" is a metaphor for a compelling case for change — a crisis, competitive threat, or urgent problem that makes maintaining the current state more dangerous than changing.', inPractice:'Build your case for change by identifying the burning platform — the risk of NOT changing.' },
+    correct:0, explanation:'A "burning platform" is a metaphor for a compelling case for change — a crisis, competitive threat, or urgent problem that makes maintaining the current state more dangerous than changing.', inPractice:'Build your case for change by identifying the burning platform — the risk of NOT changing.' },
 
   // ── VOICE 8: Multi-technology
   { type:'voice', tech:'Multi-technology Transformation', question:'Managing change fatigue in a simultaneous multi-platform rollout',
@@ -874,11 +874,11 @@ const QUESTIONS = [
   { type:'mc', tech:'Professional Grammar', question:'Which option correctly uses a relative clause to describe a stakeholder?',
     options:[
       'The director, which is responsible for the budget, approved the plan.',
-      'The director, who is responsible for the budget, approved the plan.',
       'The director, that is responsible for the budget, approved the plan.',
+      'The director, who is responsible for the budget, approved the plan.',
       'The director, whom is responsible for the budget, approved the plan.'
     ],
-    correct:1, explanation:'"Who" is used for people in relative clauses (not "which" or "that" in formal writing). "Whom" would be used if it were the object of the clause, not the subject.', inPractice:'Practice this in meeting notes: "The sponsor, who approved the budget, will lead the kickoff."' },
+    correct:2, explanation:'"Who" is used for people in relative clauses (not "which" or "that" in formal writing). "Whom" would be used if it were the object of the clause, not the subject.', inPractice:'Practice this in meeting notes: "The sponsor, who approved the budget, will lead the kickoff."' },
 
   // ── VOICE 9: Executive Sponsorship
   { type:'voice', tech:'Executive Sponsorship', question:'Activating a passive executive sponsor',
@@ -902,11 +902,11 @@ const QUESTIONS = [
   { type:'mc', tech:'Professional Grammar', question:'Choose the most appropriate way to open a difficult email to a resistant stakeholder:',
     options:[
       'You have not responded to my last three messages, so I am writing again.',
-      'I am following up on my previous messages and wanted to ensure this important matter receives your attention.',
       'As I mentioned before, this is urgent and needs your immediate response.',
-      'I need you to reply to this email as soon as possible.'
+      'I need you to reply to this email as soon as possible.',
+      'I am following up on my previous messages and wanted to ensure this important matter receives your attention.'
     ],
-    correct:1, explanation:'Professional follow-up emails avoid accusatory language ("you have not responded") and urgency pressure. Instead, they use neutral, collaborative framing that preserves the relationship while conveying importance.', inPractice:'Before sending a follow-up, remove any language that implies blame or urgency — it protects the relationship.' }
+    correct:3, explanation:'Professional follow-up emails avoid accusatory language ("you have not responded") and urgency pressure. Instead, they use neutral, collaborative framing that preserves the relationship while conveying importance.', inPractice:'Before sending a follow-up, remove any language that implies blame or urgency — it protects the relationship.' }
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
