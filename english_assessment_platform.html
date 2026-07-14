@@ -1577,7 +1577,7 @@ function renderResults(r) {
 function updateProgress() {
   const total = TOTAL_Q;
   const current = currentQIdx;
-  const pct = Math.round((current / total) * 100);
+  const pct = Math.round(((current + 1) / total) * 100);
   const counter = document.getElementById('eval-counter');
   const fill = document.getElementById('prog-bar-fill');
   const label = document.getElementById('prog-label-text');
@@ -1668,9 +1668,6 @@ function renderVoiceQ(q, container) {
       <div class="q-header">
         <span class="q-type-badge q-type-voice">🎙 Spoken response</span>
         <span class="tech-pill" style="background:${getTechColor(q.tech)};">${q.tech}</span>
-        <span style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${getQuestionDifficulty(currentQIdx).color};">
-          ${getQuestionDifficulty(currentQIdx).label}
-        </span>
       </div>
       <div class="q-title">${q.question}</div>
       <div class="scenario-box">${q.scenario}</div>
