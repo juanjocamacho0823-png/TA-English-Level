@@ -731,19 +731,6 @@ function startQuestionCountdown(partId, seconds) {
 function startEvalTimerQ(partId, seconds) {
   // No-op — countdown is now handled by startQuestionCountdown
 }
-  const display=document.getElementById('t-display-'+partId);
-  const fill=document.getElementById('t-fill-'+partId);
-  if (!display||!fill) return;
-  let remaining=seconds;
-  clearInterval(evalTimer);
-  evalTimer=setInterval(()=>{
-    remaining--;
-    display.textContent=`${Math.floor(remaining/60)}:${(remaining%60).toString().padStart(2,'0')}`;
-    fill.style.width=(remaining/seconds*100)+'%';
-    fill.style.background=remaining<30?'#dc2626':'#4f46e5';
-    if(remaining<=0){clearInterval(evalTimer);}
-  },1000);
-}
 
 function startWaveform(canvas, stream, partId) {
   const ctx=canvas.getContext('2d');
