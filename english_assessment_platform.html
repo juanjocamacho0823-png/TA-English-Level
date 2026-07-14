@@ -310,6 +310,10 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
+  position: sticky;
+  top: 36px;
+  z-index: 90;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
 }
 .eval-progress-track {
   flex: 1;
@@ -359,7 +363,7 @@ body {
 .tech-google { border-left: 4px solid #34A853; }
 .tech-aws { border-left: 4px solid #FF9900; }
 .tech-oracle { border-left: 4px solid #F80000; }
-.tech-ai { border-left: 4px solid var(--acn-purple); }
+.tech-ai { border-left: 4px solid #6600CC; }
 .tech-cm { border-left: 4px solid var(--acn-gray-3); }
 .tech-grammar { border-left: 4px solid #0078D4; }
 
@@ -409,6 +413,8 @@ body {
 .rec-dot.recording { background: var(--acn-danger); animation: blink 1s infinite; }
 .rec-dot.done { background: var(--acn-success); }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+@keyframes recPulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.recording-active-label { animation: recPulse 1.2s ease-in-out infinite; color: var(--acn-danger) !important; font-weight: 700 !important; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
 @keyframes confettiBounce { 0%{transform:scale(0);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
 @keyframes toastIn { from{transform:translateY(100px);opacity:0;} to{transform:translateY(0);opacity:1;} }
@@ -735,8 +741,7 @@ body {
         <button class="btn btn-success" id="warmup-stop-btn" style="display:none;" onclick="stopWarmup()">⏹ Stop</button>
         <button class="btn btn-primary" id="warmup-next-btn" style="display:none;" onclick="startMainEval()">Begin check →</button>
       </div>
-      <p style="font-size:12px;color:var(--acn-gray-3);margin-top:1rem;">You can also skip this and go straight to the check.</p>
-      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px;" onclick="startMainEval()">Skip warm-up →</button>
+      <button style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--acn-gray-3);margin-top:1.25rem;text-decoration:underline;text-underline-offset:3px;" onclick="startMainEval()">Skip warm-up</button>
     </div>
   </div>
 </div>
@@ -901,14 +906,14 @@ const QUESTIONS = [
     scenario:'A global logistics company is simultaneously rolling out SAP S/4HANA, Microsoft Teams, and a new AWS analytics platform in a 12-month window. Your survey shows 61% report change fatigue. Managers say they cannot absorb more change. What is your change strategy?' },
 
   // ── MC 8: Grammar
-  { type:'mc', tech:'Professional Grammar', question:'Which option correctly uses a relative clause to describe a stakeholder?',
+  { type:'mc', tech:'Professional Grammar', question:'Which opening is most appropriate for a formal recommendation email to a senior client?',
     options:[
-      'The director, which is responsible for the budget, approved the plan.',
-      'The director, that is responsible for the budget, approved the plan.',
-      'The director, who is responsible for the budget, approved the plan.',
-      'The director, whom is responsible for the budget, approved the plan.'
+      'I am writing to let you know about some things we found.',
+      'Hey, just wanted to share a few thoughts on the project.',
+      'As per our previous conversation, please find enclosed the requested information.',
+      'I am writing to present our findings and recommended next steps following the recent assessment.'
     ],
-    correct:2, explanation:'"Who" is used for people in relative clauses (not "which" or "that" in formal writing). "Whom" would be used if it were the object of the clause, not the subject.', inPractice:'Practice this in meeting notes: "The sponsor, who approved the budget, will lead the kickoff."' },
+    correct:3, explanation:'Formal recommendation emails open by stating their purpose clearly and professionally. Option D establishes context, signals the email's intent, and uses appropriate register for a senior client.', inPractice:'Save this structure as a template: "I am writing to [purpose] following [context]. Please find [content] below."' },
 
   // ── VOICE 9: Executive Sponsorship
   { type:'voice', tech:'Executive Sponsorship', question:'Activating a passive executive sponsor',
@@ -1144,7 +1149,8 @@ function renderQuestion() {
   if (q.type==='voice') renderVoiceQ(q, container);
   else {
     renderMCQ(q, container);
-    startMCTimer(currentQIdx, 45);
+    const timerSeconds = (q.tech && q.tech.toLowerCase().includes('grammar')) ? 45 : 60;
+    startMCTimer(currentQIdx, timerSeconds);
   }
 }
 
@@ -1156,7 +1162,7 @@ function renderVoiceQ(q, container) {
       <span class="tech-tag">${q.tech}</span>
       <h2>${q.question}</h2>
       <div class="scenario-box">${q.scenario}</div>
-      <div style="border-top:1px solid var(--acn-gray-1); margin:1.25rem 0;"></div>
+      <div style="border-top:1px solid var(--acn-gray-1); margin:1.5rem 0;"></div>
       <div class="recorder-wrap">
         <div class="recorder-state">
           <div class="rec-dot" id="dot-${partId}"></div>
@@ -1243,7 +1249,7 @@ function startRec(partId) {
     audioURLs[partId]=URL.createObjectURL(blob);
     document.getElementById('pb-'+partId).classList.add('visible');
     document.getElementById('dot-'+partId).className='rec-dot done';
-    document.getElementById('rlabel-'+partId).textContent='Recording complete';
+    const rl = document.getElementById('rlabel-'+partId); rl.textContent='Recording complete'; rl.classList.remove('recording-active-label'); rl.style.color='';
     document.getElementById('btn-stop-'+partId).style.display='none';
     document.getElementById('btn-stop-'+partId).classList.remove('btn-stop-active');
     const nextBtn = document.getElementById('btn-next-voice'); nextBtn.style.display='inline-flex'; nextBtn.classList.add('btn-primary'); nextBtn.classList.remove('btn-ghost');
@@ -1256,7 +1262,7 @@ function startRec(partId) {
   document.getElementById('btn-stop-'+partId).style.display='inline-flex';
   document.getElementById('btn-stop-'+partId).classList.add('btn-stop-active');
   document.getElementById('dot-'+partId).className='rec-dot recording';
-  document.getElementById('rlabel-'+partId).textContent='Recording — speak your answer now';
+  const rlabel = document.getElementById('rlabel-'+partId); rlabel.textContent='● Recording in progress'; rlabel.classList.add('recording-active-label');
   const waveCanvas = document.getElementById('wave-'+partId);
   const wavePlaceholder = document.getElementById('wave-placeholder-'+partId);
   if (waveCanvas) { waveCanvas.style.display='block'; if(wavePlaceholder) wavePlaceholder.style.display='none'; startWaveform(waveCanvas, micStream, partId); }
@@ -1298,10 +1304,18 @@ function startQuestionCountdown(partId, seconds) {
     // Auto-stop and advance when timer hits 0
     // Add urgency visual at 15s
     const card = document.querySelector('.q-card');
-    if (remaining <= 15 && card) card.classList.add('urgent');
+    const timerDisplay = document.getElementById('t-display-' + partId);
+    if (remaining <= 15) {
+      if (card) card.classList.add('urgent');
+      if (timerDisplay) {
+        timerDisplay.style.color = '#CC0000';
+        timerDisplay.style.fontSize = remaining <= 5 ? '36px' : '32px';
+      }
+    }
     if (remaining <= 0) {
       clearInterval(evalTimer);
       if (card) card.classList.remove('urgent');
+      if (timerDisplay) { timerDisplay.style.color = ''; timerDisplay.style.fontSize = ''; }
       const mr = mediaRecorders[partId];
       if (mr && mr.state === 'recording') {
         mr.stop(); // onstop will show Next button
@@ -1503,11 +1517,17 @@ async function uploadToDriveManual() {
     const total = results.length;
     if (uploaded === total) {
       const firstName = (collab && collab.name) ? collab.name.split(' ')[0] : 'there';
+      const mcCorrectCount = Object.values(mcAnswers).filter(Boolean).length;
+      const mcTotalCount = Object.values(mcAnswers).length;
       msgEl.innerHTML = `
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.2 43" height="20" style="margin-bottom:1.5rem;"><style>.rl{fill:#A100FF;}</style><g><polygon class="rl" points="95.1,12 104.5,8.5 95.1,4.9 95.1,0 111.2,6.5 111.2,10.5 95.1,17"/><path fill="#000000" d="M6.2,43C2.8,43,0,41.3,0,37.5v-0.2c0-4.6,4-6.2,8.9-6.2h2.3v-0.9c0-1.9-0.8-3-2.8-3c-1.8,0-2.7,1-2.8,2.4h-5c0.4-4.2,3.7-6.2,8.1-6.2c4.5,0,7.8,1.9,7.8,6.6v12.6h-5.1v-2.2C10.4,41.8,8.7,43,6.2,43z M11.2,36.4v-1.8H9.1c-2.6,0-3.9,0.7-3.9,2.4v0.2c0,1.3,0.8,2.2,2.6,2.2C9.6,39.3,11.2,38.3,11.2,36.4z M28.4,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C36.4,40,33.5,43,28.4,43z M48,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C56,40,53.1,43,48,43z M67.7,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3H63.9c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C75.6,40.3,72.6,43,67.7,43z M64,31H71c-0.1-2.8-1.4-4-3.5-4C65.9,27.1,64.4,28,64,31z M79.4,23.8h5.3v2.8c0.9-1.8,2.8-3.2,5.7-3.2c3.4,0,5.7,2.1,5.7,6.6v12.6h-5.3V30.8c0-2.2-0.9-3.2-2.8-3.2c-1.8,0-3.3,1.1-3.3,3.5v11.5h-5.3V23.8z M105.8,18.1v5.7h3.6v3.9h-3.6v8.9c0,1.4,0.6,2.1,1.9,2.1c0.8,0,1.3-0.1,1.8-0.3v4.1c-0.6,0.2-1.7,0.4-3,0.4c-4.1,0-6-1.9-6-5.7v-9.5h-2.2v-3.9h2.2v-3.5L105.8,18.1z M129.2,42.6H124v-2.8c-0.9,1.8-2.7,3.2-5.5,3.2c-3.4,0-5.9-2.1-5.9-6.5V23.8h5.3v12c0,2.2,0.9,3.2,2.7,3.2c1.8,0,3.3-1.2,3.3-3.5V23.8h5.3V42.6z M133.1,23.8h5.3v3.5c1.1-2.5,2.9-3.7,5.7-3.7v5.2c-3.6,0-5.7,1.1-5.7,4.2v9.7h-5.3V23.8z M154.8,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3h-12.2c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C162.6,40.3,159.7,43,154.8,43z M151,31h7.1c-0.1-2.8-1.4-4-3.5-4C153,27.1,151.5,28,151,31z"/></g></svg>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.2 43" height="28" style="margin-bottom:1.5rem;"><style>.rl{fill:#A100FF;}</style><g><polygon class="rl" points="95.1,12 104.5,8.5 95.1,4.9 95.1,0 111.2,6.5 111.2,10.5 95.1,17"/><path fill="#000000" d="M6.2,43C2.8,43,0,41.3,0,37.5v-0.2c0-4.6,4-6.2,8.9-6.2h2.3v-0.9c0-1.9-0.8-3-2.8-3c-1.8,0-2.7,1-2.8,2.4h-5c0.4-4.2,3.7-6.2,8.1-6.2c4.5,0,7.8,1.9,7.8,6.6v12.6h-5.1v-2.2C10.4,41.8,8.7,43,6.2,43z M11.2,36.4v-1.8H9.1c-2.6,0-3.9,0.7-3.9,2.4v0.2c0,1.3,0.8,2.2,2.6,2.2C9.6,39.3,11.2,38.3,11.2,36.4z M28.4,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C36.4,40,33.5,43,28.4,43z M48,43c-5.2,0-9-3.2-9-9.6v-0.3c0-6.4,4-9.8,9-9.8c4.3,0,7.8,2.2,8.2,7.1h-5c-0.3-1.8-1.3-3-3.1-3c-2.2,0-3.8,1.8-3.8,5.5v0.6c0,3.8,1.4,5.5,3.8,5.5c1.8,0,3.1-1.3,3.4-3.4h4.8C56,40,53.1,43,48,43z M67.7,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3H63.9c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C75.6,40.3,72.6,43,67.7,43z M64,31H71c-0.1-2.8-1.4-4-3.5-4C65.9,27.1,64.4,28,64,31z M79.4,23.8h5.3v2.8c0.9-1.8,2.8-3.2,5.7-3.2c3.4,0,5.7,2.1,5.7,6.6v12.6h-5.3V30.8c0-2.2-0.9-3.2-2.8-3.2c-1.8,0-3.3,1.1-3.3,3.5v11.5h-5.3V23.8z M105.8,18.1v5.7h3.6v3.9h-3.6v8.9c0,1.4,0.6,2.1,1.9,2.1c0.8,0,1.3-0.1,1.8-0.3v4.1c-0.6,0.2-1.7,0.4-3,0.4c-4.1,0-6-1.9-6-5.7v-9.5h-2.2v-3.9h2.2v-3.5L105.8,18.1z M129.2,42.6H124v-2.8c-0.9,1.8-2.7,3.2-5.5,3.2c-3.4,0-5.9-2.1-5.9-6.5V23.8h5.3v12c0,2.2,0.9,3.2,2.7,3.2c1.8,0,3.3-1.2,3.3-3.5V23.8h5.3V42.6z M133.1,23.8h5.3v3.5c1.1-2.5,2.9-3.7,5.7-3.7v5.2c-3.6,0-5.7,1.1-5.7,4.2v9.7h-5.3V23.8z M154.8,43c-5.4,0-9.1-3.2-9.1-9.5v-0.4c0-6.3,3.9-9.8,9-9.8c4.7,0,8.6,2.6,8.6,8.9v2.3h-12.2c0.2,3.4,1.7,4.7,3.9,4.7c2,0,3.1-1.1,3.5-2.4h4.9C162.6,40.3,159.7,43,154.8,43z M151,31h7.1c-0.1-2.8-1.4-4-3.5-4C153,27.1,151.5,28,151,31z"/></g></svg>
         <div style="font-size:56px; margin-bottom:1rem; animation:confettiBounce 0.6s ease;">✅</div>
         <h2 style="font-size:22px; font-weight:700; margin-bottom:10px;">Well done, ${firstName}!</h2>
         <p style="font-size:15px; color:#444; margin-bottom:8px; line-height:1.7;">Your recordings are on their way to the team.<br>We'll be in touch soon with something designed specifically for you.</p>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--acn-gray-1);padding:8px 16px;margin-bottom:12px;font-size:13px;">
+          <span style="font-weight:700;color:var(--acn-black);">${mcCorrectCount} of ${mcTotalCount}</span>
+          <span style="color:var(--acn-gray-3);">written questions correct</span>
+        </div>
         <p style="font-size:13px; color:#818180; margin-bottom:6px;">Expect to hear from us in a few days.</p>
         <p style="font-size:13px; color:#818180; margin-bottom:1rem;">Thank you for taking the time to complete this.</p>
         <div style="display:inline-flex;align-items:center;gap:6px;background:#E6F9EE;color:#005522;font-size:12px;font-weight:600;padding:6px 14px;margin-bottom:1.5rem;">
@@ -1781,7 +1801,7 @@ function renderVoiceQ(q, container) {
         </div>
       </div>
       ${buildCircularTimer(partId)}
-      <div style="border-top:1px solid var(--acn-gray-1); margin:1.25rem 0;"></div>
+      <div style="border-top:1px solid var(--acn-gray-1); margin:1.5rem 0;"></div>
       <div class="recorder-wrap">
         <div class="recorder-state">
           <div class="rec-dot" id="dot-${partId}"></div>
@@ -1891,7 +1911,7 @@ function getTechColor(tech) {
   if (t.includes('google')) return '#34A853';
   if (t.includes('aws') || t.includes('cloud')) return '#FF9900';
   if (t.includes('oracle')) return '#F80000';
-  if (t.includes('ai') || t.includes('adoption')) return '#A100FF';
+  if (t.includes('ai') || t.includes('adoption')) return '#6600CC';
   if (t.includes('grammar')) return '#0078D4';
   return '#333333';
 }
