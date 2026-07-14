@@ -245,8 +245,41 @@
     </div>
   </div>
 
-  <!-- Mic check -->
-  <div id="step-miccheck" style="display:none;">
+  <!-- Consent screen -->
+  <div id="step-consent" style="display:none;">
+    <div class="card" style="border-top:3px solid #A100FF; padding:2rem; max-width:600px; margin:2rem auto;">
+      <div style="text-align:center; margin-bottom:1.5rem;">
+        <div style="font-size:40px; margin-bottom:0.75rem;">🎙️</div>
+        <div class="card-tag" style="color:#A100FF;">Recording consent</div>
+        <h2 style="font-size:20px; font-weight:600; margin-bottom:0;">Before we begin</h2>
+      </div>
+      <div style="background:var(--surface-2); padding:1.25rem 1.5rem; margin-bottom:1.5rem; border-left:3px solid #A100FF;">
+        <p style="font-size:14px; color:var(--ink-2); line-height:1.8; margin:0;">
+          By continuing, you acknowledge and agree that:
+        </p>
+        <ul style="font-size:14px; color:var(--ink-2); line-height:2; margin:0.75rem 0 0 0; padding-left:1.25rem;">
+          <li>Your voice responses will be <strong>recorded</strong> during this assessment.</li>
+          <li>Your recordings will be <strong>shared with the Training &amp; Upskilling team</strong> of the Technology Adoption initiative for evaluation purposes only.</li>
+          <li>This information will be used exclusively to design a <strong>personalized learning path</strong> for your professional development.</li>
+          <li>Your responses will be treated with <strong>confidentiality</strong> and will not be shared outside the initiative team.</li>
+        </ul>
+      </div>
+      <div class="alert alert-info" style="margin-bottom:1.5rem; font-size:13px;">
+        If you have any questions about how your data will be used, please contact the Training &amp; Upskilling team before proceeding.
+      </div>
+      <div class="btn-row" style="justify-content:center; gap:16px;">
+        <button class="btn btn-ghost" onclick="document.getElementById('step-consent').style.display='none'; document.getElementById('step-register').style.display='block';">
+          ← Go back
+        </button>
+        <button class="btn btn-primary" style="padding:12px 32px; font-size:15px;" onclick="acceptConsent()">
+          I understand and agree →
+        </button>
+      </div>
+      <p style="font-size:11px; color:var(--ink-3); text-align:center; margin-top:1rem;">
+        Technology Adoption · Digital Core · Accenture
+      </p>
+    </div>
+  </div>
     <div class="card">
       <div class="mic-check">
         <div class="mic-icon">🎙️</div>
@@ -460,9 +493,14 @@ function goToMicCheck() {
   const name = document.getElementById('reg-name').value.trim();
   const eid  = document.getElementById('reg-eid').value.trim();
   const cl   = document.getElementById('reg-cl').value.trim();
-  if (!name||!eid) { alert('Por favor completa tu nombre y EID.'); return; }
+  if (!name||!eid) { alert('Please fill in your full name and EID.'); return; }
   collab = { name, eid, cl };
   document.getElementById('step-register').style.display='none';
+  document.getElementById('step-consent').style.display='block';
+}
+
+function acceptConsent() {
+  document.getElementById('step-consent').style.display='none';
   document.getElementById('step-miccheck').style.display='block';
 }
 
@@ -542,11 +580,11 @@ function renderVoiceQ(q, container) {
       <div class="recorder-wrap">
         <div class="recorder-state">
           <div class="rec-dot" id="dot-${partId}"></div>
-          <div class="rec-label" id="rlabel-${partId}">Ready to record</div>
+          <div class="rec-label" id="rlabel-${partId}">Read the scenario — recording starts automatically</div>
           <div class="rec-time" id="rtime-${partId}">0:00</div>
         </div>
         <canvas class="waveform" id="wave-${partId}"></canvas>
-        <div class="timer-wrap" id="timer-wrap-${partId}" style="display:none;">
+        <div class="timer-wrap" id="timer-wrap-${partId}">
           <div class="timer-label"><span>Time remaining</span><span id="t-display-${partId}">2:00</span></div>
           <div class="timer-track"><div class="timer-fill" id="t-fill-${partId}" style="width:100%;"></div></div>
         </div>
@@ -556,11 +594,15 @@ function renderVoiceQ(q, container) {
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-danger" id="btn-rec-${partId}" onclick="startRec('${partId}')">⏺ Start recording</button>
+        <button class="btn btn-danger" id="btn-rec-${partId}" onclick="startRec('${partId}')" style="display:none;">⏺ Start recording</button>
         <button class="btn btn-success" id="btn-stop-${partId}" style="display:none;" onclick="stopRec('${partId}')">⏹ Stop recording</button>
         <button class="btn btn-primary" id="btn-next-voice" style="display:none;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>`;
+
+  // Start the 2-min countdown immediately when question appears
+  // Auto-start recording after a short delay so the page renders first
+  startQuestionCountdown(partId, 120);
 }
 
 function renderMCQ(q, container) {
@@ -630,7 +672,7 @@ function startRec(partId) {
   document.getElementById('btn-rec-'+partId).style.display='none';
   document.getElementById('btn-stop-'+partId).style.display='inline-flex';
   document.getElementById('dot-'+partId).className='rec-dot recording';
-  document.getElementById('rlabel-'+partId).textContent='Recording…';
+  document.getElementById('rlabel-'+partId).textContent='Recording — speak your answer now';
   // Show and start timer NOW (when recording starts)
   document.getElementById('timer-wrap-'+partId).style.display='block';
   startEvalTimerQ(partId, 120);
@@ -656,7 +698,40 @@ function startRecTimer(partId) {
 
 function stopRecTimer(partId) { clearInterval(recTimers[partId]); }
 
+function startQuestionCountdown(partId, seconds) {
+  const display = document.getElementById('t-display-'+partId);
+  const fill = document.getElementById('t-fill-'+partId);
+  const label = document.getElementById('rlabel-'+partId);
+  let remaining = seconds;
+  let recordingStarted = false;
+
+  clearInterval(evalTimer);
+  evalTimer = setInterval(() => {
+    remaining--;
+    const m = Math.floor(remaining/60);
+    const s = remaining%60;
+    display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    fill.style.width = (remaining/seconds*100)+'%';
+    fill.style.background = remaining < 30 ? '#dc2626' : '#A100FF';
+
+    // Auto-start recording after 3 seconds (gives time to read scenario)
+    if (remaining === seconds - 3 && !recordingStarted) {
+      recordingStarted = true;
+      startRec(partId);
+    }
+
+    // Auto-stop when timer hits 0
+    if (remaining <= 0) {
+      clearInterval(evalTimer);
+      const mr = mediaRecorders[partId];
+      if (mr && mr.state === 'recording') mr.stop();
+    }
+  }, 1000);
+}
+
 function startEvalTimerQ(partId, seconds) {
+  // No-op — countdown is now handled by startQuestionCountdown
+}
   const display=document.getElementById('t-display-'+partId);
   const fill=document.getElementById('t-fill-'+partId);
   if (!display||!fill) return;
