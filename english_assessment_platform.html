@@ -669,6 +669,14 @@ body {
         <div class="field"><label>EID</label><input type="text" id="reg-eid" placeholder="e.g. agarcía"/></div>
       </div>
       <div class="field"><label>Career Level (CL)</label><input type="text" id="reg-cl" placeholder="e.g. 8, 9, 10"/></div>
+      <div style="background:#000; border-left:4px solid #A100FF; padding:10px 14px; margin-bottom:1.25rem; display:flex; align-items:flex-start; gap:10px;">
+        <span style="font-size:18px; flex-shrink:0;">⚠️</span>
+        <div>
+          <div style="font-size:12px; font-weight:700; color:#A100FF; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:3px;">Before you start</div>
+          <div style="font-size:12px; color:#ccc; line-height:1.6;">Please <strong style="color:#fff;">allow pop-ups</strong> in your browser for this site. At the end of the check, a Google authorization window will appear to save your recordings. If pop-ups are blocked, your responses may not be saved.<br>
+          <span style="color:#818180;">Chrome: click the 🔒 icon in the address bar → Pop-ups → Allow.</span></div>
+        </div>
+      </div>
       <button class="btn btn-primary" style="width:100%; justify-content:center; padding:15px;" id="btn-continue" onclick="this.textContent='Loading…'; this.disabled=true; setTimeout(()=>goToMicCheck(),300);">Continue →</button>
     </div>
   </div>
@@ -1434,15 +1442,23 @@ async function getDriveToken() {
 async function uploadAudioToDrive(blob, filename) {
   try {
     const token = await getDriveToken();
+    if (!token) throw new Error('No token');
     const metadata = { name: filename, parents: [DRIVE_FOLDER_ID] };
     const form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
     form.append('file', blob, filename);
-    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token },
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      },
       body: form
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error('Drive upload error:', res.status, err);
+      return false;
+    }
     const data = await res.json();
     return !!data.id;
   } catch(e) {
@@ -1495,6 +1511,8 @@ async function submitEval() {
 
 async function uploadToDriveManual() {
   const msgEl = document.getElementById('drive-upload-msg');
+  // Reset token to force fresh OAuth on each upload attempt
+  driveToken = null;
   try {
     await waitForGoogle();
     initTokenClient();
@@ -1505,7 +1523,7 @@ async function uploadToDriveManual() {
         driveToken = response.access_token;
         resolve(response.access_token);
       };
-      tokenClient.requestAccessToken({ prompt: 'consent' });
+      tokenClient.requestAccessToken({ prompt: 'consent', scope: DRIVE_SCOPE });
     });
     if (msgEl) {
       msgEl.innerHTML = `<div style="font-size:32px;margin-bottom:8px;">⏳</div><p style="font-size:14px;color:var(--ink-3);">Uploading your recordings…</p>`;
